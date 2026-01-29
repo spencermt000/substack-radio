@@ -213,6 +213,85 @@
     };
 
     // ============================================
+    // COOLDOWN UTILITIES (7-day delay between featuring same article)
+    // ============================================
+    const COOLDOWN_DAYS = 7;
+    const MIN_ELIGIBLE_COUNT = 3; // Minimum articles needed to enforce cooldown
+
+    const getPastCSTDate = (daysAgo) => {
+      const date = new Date();
+      date.setDate(date.getDate() - daysAgo);
+      const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Chicago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      return formatter.format(date);
+    };
+
+    const selectWithCooldown = (items, date, stationCode, index = 0) => {
+      if (!items || items.length === 0) return null;
+
+      // Calculate what was featured in past 7 days
+      const recentlyFeatured = new Set();
+      for (let i = 1; i <= COOLDOWN_DAYS; i++) {
+        const pastDate = getPastCSTDate(i);
+        const seed = `${pastDate}-${stationCode}-${index}`;
+        const hash = simpleHash(seed);
+        const selected = items[hash % items.length];
+        if (selected) recentlyFeatured.add(selected.id || selected.url);
+      }
+
+      // Filter out recently featured
+      const eligible = items.filter(item =>
+        !recentlyFeatured.has(item.id || item.url)
+      );
+
+      // If not enough eligible, ignore cooldown
+      if (eligible.length < MIN_ELIGIBLE_COUNT) {
+        return selectFeatured(items, date, stationCode, index);
+      }
+
+      return selectFeatured(eligible, date, stationCode, index);
+    };
+
+    const selectMultipleWithCooldown = (items, date, stationCode, count = 2) => {
+      if (!items || items.length === 0) return [];
+
+      // Calculate what was featured in past 7 days (for primary selections)
+      const recentlyFeatured = new Set();
+      for (let i = 1; i <= COOLDOWN_DAYS; i++) {
+        const pastDate = getPastCSTDate(i);
+        // Check both single and multi selections from past days
+        const singleSeed = `${pastDate}-${stationCode}-0`;
+        const singleHash = simpleHash(singleSeed);
+        const singleSelected = items[singleHash % items.length];
+        if (singleSelected) recentlyFeatured.add(singleSelected.id || singleSelected.url);
+
+        for (let j = 0; j < count; j++) {
+          const multiSeed = `${pastDate}-${stationCode}-multi-${j}`;
+          const multiHash = simpleHash(multiSeed);
+          const multiSelected = items[multiHash % items.length];
+          if (multiSelected) recentlyFeatured.add(multiSelected.id || multiSelected.url);
+        }
+      }
+
+      // Filter out recently featured
+      const eligible = items.filter(item =>
+        !recentlyFeatured.has(item.id || item.url)
+      );
+
+      // Need enough eligible items for the requested count
+      const minRequired = count * MIN_ELIGIBLE_COUNT;
+      if (eligible.length < minRequired) {
+        return selectMultiple(items, date, stationCode, count);
+      }
+
+      return selectMultiple(eligible, date, stationCode, count);
+    };
+
+    // ============================================
     // API UTILITIES
     // ============================================
     const api = {
@@ -593,7 +672,7 @@
         const stationNewsletters = newsletters.filter(n => n.station_main === stationKey);
 
         return {
-          article: selectFeatured(stationArticles, today, `${stationKey}-main`),
+          article: selectWithCooldown(stationArticles, today, `${stationKey}-main`),
           newsletter: selectFeatured(stationNewsletters, today, `${stationKey}-newsletter`)
         };
       }, [articles, newsletters, today]);
@@ -720,9 +799,9 @@
         ? stationArticles
         : stationArticles.filter(a => a.subcategory === subcatName);
 
-      const featuredArticle = selectFeatured(filteredArticles, today, currentFreq);
+      const featuredArticle = selectWithCooldown(filteredArticles, today, currentFreq);
       const featuredNewsletter = isMainMix ? selectFeatured(stationNewsletters, today, `${currentFreq}-newsletter`) : null;
-      const additionalArticles = selectMultiple(
+      const additionalArticles = selectMultipleWithCooldown(
         filteredArticles.filter(a => a.id !== featuredArticle?.id),
         today,
         currentFreq,
