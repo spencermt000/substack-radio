@@ -102,6 +102,8 @@ def airtable_request(table: str, method: str = 'GET', data: dict = None) -> dict
     else:
         raise ValueError(f"Unsupported method: {method}")
 
+    if not response.ok:
+        print(f"    Airtable error: {response.text}")
     response.raise_for_status()
     return response.json()
 
@@ -121,10 +123,9 @@ def create_article(article_data: dict, station: str, subcategory: str) -> dict:
     fields = {
         'title': article_data['post_title'],
         'author': article_data['author_name'] or '',
-        'url': article_data['post_url'],
+        'link': article_data['post_url'],
         'station_main': station,
         'subcategory': subcategory,
-        'description': article_data['post_subtitle'] or '',
         'submitted_date': date.today().isoformat(),
         'approved': False,  # Requires manual approval
         'image_url': article_data['thumbnail_url'] or '',
@@ -328,6 +329,10 @@ def import_from_scraped_json(json_path: str, station: str = None, subcategory: s
         if data.get('failed', 0) > 0:
             print(f"Failed scrapes: {data.get('failed', 0)}")
 
+        # Check if this is categorized format (articles have _station/_subcategory)
+        if data.get('format') == 'categorized' or (articles and '_station' in articles[0]):
+            return import_categorized_articles(articles, json_path)
+
         # Get station/subcategory from JSON if not passed as args
         if not station and data.get('station'):
             station = data['station']
@@ -435,6 +440,107 @@ def import_from_scraped_json(json_path: str, station: str = None, subcategory: s
         'source_file': json_path,
         'station': station,
         'subcategory': subcategory,
+        'successful': success_count,
+        'failed': error_count,
+        'results': results
+    }
+    with open(log_path, 'w') as f:
+        json_module.dump(log_data, f, indent=2)
+    print(f"\nImport log saved to: {log_path}")
+
+    return results
+
+
+def import_categorized_articles(articles: list, json_path: str):
+    """
+    Import articles that have embedded _station and _subcategory fields.
+    This handles the output from scraping categorized JSON files.
+    """
+    import json as json_module
+    import time
+
+    # Group articles by station/subcategory
+    categories = {}
+    for article in articles:
+        station = article.get('_station', 'Unknown')
+        subcategory = article.get('_subcategory', 'Unknown')
+        key = (station, subcategory)
+        if key not in categories:
+            categories[key] = []
+        categories[key].append(article)
+
+    # Show summary
+    print("\n" + "=" * 50)
+    print("CATEGORIZED IMPORT")
+    print("=" * 50)
+    print(f"Found {len(articles)} articles across {len(categories)} categories:")
+    for (station, subcategory), arts in categories.items():
+        print(f"  • {station} > {subcategory}: {len(arts)} articles")
+    print("=" * 50)
+
+    # Confirm
+    confirm = input("\nProceed with import? (y/n): ").strip().lower()
+    if confirm != 'y':
+        print("Cancelled.")
+        return
+
+    # Import each category
+    print(f"\nImporting {len(articles)} articles...")
+
+    success_count = 0
+    error_count = 0
+    results = []
+
+    for (station, subcategory), category_articles in categories.items():
+        print(f"\n--- {station} > {subcategory} ({len(category_articles)} articles) ---")
+
+        for i, article in enumerate(category_articles, 1):
+            title = article.get('post_title', 'Unknown')[:40]
+            print(f"  [{i}/{len(category_articles)}] {title}...")
+
+            try:
+                result = create_article(article, station, subcategory)
+                print(f"    ✓ Added (ID: {result['id']})")
+                success_count += 1
+                results.append({
+                    'status': 'success',
+                    'title': article.get('post_title'),
+                    'station': station,
+                    'subcategory': subcategory,
+                    'id': result['id']
+                })
+
+                time.sleep(0.3)
+
+            except Exception as e:
+                print(f"    ✗ Error: {e}")
+                error_count += 1
+                results.append({
+                    'status': 'error',
+                    'title': article.get('post_title'),
+                    'station': station,
+                    'subcategory': subcategory,
+                    'error': str(e)
+                })
+
+    # Summary
+    print("\n" + "=" * 50)
+    print("IMPORT COMPLETE")
+    print("=" * 50)
+    print(f"  Successful: {success_count}")
+    print(f"  Failed: {error_count}")
+    print(f"  Total: {len(articles)}")
+
+    if success_count > 0:
+        print(f"\nNote: All {success_count} articles are unapproved.")
+        print("Set approved=true in Airtable to make them eligible.")
+
+    # Save results log
+    log_path = json_path.rsplit('.', 1)[0] + '_import_log.json'
+    log_data = {
+        'imported_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'source_file': json_path,
+        'format': 'categorized',
         'successful': success_count,
         'failed': error_count,
         'results': results

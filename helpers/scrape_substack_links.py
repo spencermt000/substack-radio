@@ -180,10 +180,16 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
 
         2. Object with station, subcategory, and urls:
            {
-             "station": "CAPITAL94",
+             "station": "MONEY94",
              "subcategory": "Markets & Investing",
              "urls": ["https://...", "https://..."]
            }
+
+        3. Array of category objects (each with station/subcategory/urls):
+           [
+             {"station": "MONEY94", "subcategory": "Markets", "urls": [...]},
+             {"station": "PULSE95", "subcategory": "News", "urls": [...]}
+           ]
 
     Returns:
         List of scraped article data
@@ -192,6 +198,11 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
 
     with open(json_path, 'r') as f:
         data = json.load(f)
+
+    # Check if it's an array of category objects
+    if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict) and 'urls' in data[0]:
+        # Format 3: Array of category objects
+        return scrape_categorized_json(data, json_path, output_path)
 
     # Extract station/subcategory if present
     station = None
@@ -265,6 +276,79 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
     print(f"Results saved to: {output_path}")
 
     return results
+
+
+def scrape_categorized_json(categories: list, json_path: str, output_path: str = None) -> list:
+    """
+    Scrape URLs from an array of category objects.
+    Each category has station, subcategory, and urls.
+    """
+    import time
+
+    total_urls = sum(len(cat.get('urls', [])) for cat in categories)
+    print(f"Found {len(categories)} categories with {total_urls} total URLs")
+    print("=" * 60)
+
+    all_results = []
+    all_errors = []
+    url_counter = 0
+
+    for cat_idx, category in enumerate(categories, 1):
+        station = category.get('station', 'Unknown')
+        subcategory = category.get('subcategory', 'Unknown')
+        urls = category.get('urls', [])
+
+        print(f"\n[Category {cat_idx}/{len(categories)}] {station} > {subcategory}")
+        print(f"  {len(urls)} URLs to scrape")
+
+        for url in urls:
+            url_counter += 1
+            print(f"\n  [{url_counter}/{total_urls}] {url}")
+            try:
+                article_data = scrape_substack_article(url)
+                # Add station/subcategory to the article data
+                article_data['_station'] = station
+                article_data['_subcategory'] = subcategory
+                all_results.append(article_data)
+                title = article_data['post_title'][:40] if article_data['post_title'] else 'No title'
+                print(f"    ✓ {title}...")
+
+                time.sleep(0.5)
+
+            except Exception as e:
+                print(f"    ✗ Error: {e}")
+                all_errors.append({
+                    'url': url,
+                    'station': station,
+                    'subcategory': subcategory,
+                    'error': str(e)
+                })
+
+    print("\n" + "=" * 60)
+    print(f"Completed: {len(all_results)} successful, {len(all_errors)} failed")
+
+    # Determine output path
+    if not output_path:
+        base_name = json_path.rsplit('.', 1)[0]
+        output_path = f"{base_name}_scraped.json"
+
+    # Save results - keep the categorized format
+    output_data = {
+        'scraped_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'format': 'categorized',
+        'total': total_urls,
+        'successful': len(all_results),
+        'failed': len(all_errors),
+        'articles': all_results,
+        'errors': all_errors
+    }
+
+    with open(output_path, 'w') as f:
+        json.dump(output_data, f, indent=2)
+
+    print(f"Results saved to: {output_path}")
+
+    return all_results
 
 
 def main():

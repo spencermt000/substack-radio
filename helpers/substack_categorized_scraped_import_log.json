@@ -1,0 +1,464 @@
+{
+  "imported_at": "2026-01-28 19:14:20",
+  "source_file": "substack_categorized_scraped.json",
+  "format": "categorized",
+  "successful": 2,
+  "failed": 63,
+  "results": [
+    {
+      "status": "error",
+      "title": "Gold Explodes Towards $5,500 & This Gold Developer Backed by Smart Money Is Poised To Win Big!",
+      "station": "MONEY94",
+      "subcategory": "Markets & Investing",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Is Entrepreneurship Research Becoming Too Boring?",
+      "station": "MONEY94",
+      "subcategory": "Startups & Entrepreneurship",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "success",
+      "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
+      "station": "MONEY94",
+      "subcategory": "Startups & Entrepreneurship",
+      "id": "recBE8eD7fiPnXtQj"
+    },
+    {
+      "status": "error",
+      "title": "Stop copy-pasting spreadsheets into ChatGPT.",
+      "station": "MONEY94",
+      "subcategory": "Technology & Innovation",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Open Source Deep Learning Curriculum",
+      "station": "MONEY94",
+      "subcategory": "Technology & Innovation",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The Work Beneath the Noise",
+      "station": "MONEY94",
+      "subcategory": "Technology & Innovation",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "we've created a society where artists can't make any money",
+      "station": "MONEY94",
+      "subcategory": "Economics & Business",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Your Personal Finance Starter Kit",
+      "station": "MONEY94",
+      "subcategory": "Personal Finance",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The personal finance book that changed my life",
+      "station": "MONEY94",
+      "subcategory": "Personal Finance",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Substack isn't solving anti-intellectualism ",
+      "station": "PULSE95",
+      "subcategory": "News & Current Events",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "the gen z resilience drought",
+      "station": "PULSE95",
+      "subcategory": "News & Current Events",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The Great Entertainment ",
+      "station": "PULSE95",
+      "subcategory": "Pop Culture & Entertainment",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "This week's entertainment and lifestyle digest",
+      "station": "PULSE95",
+      "subcategory": "Pop Culture & Entertainment",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Did KPop Demon Hunters Dethrone Encanto to Become the Biggest Streaming Film of All Time?",
+      "station": "PULSE95",
+      "subcategory": "Pop Culture & Entertainment",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "films for when you feel lost",
+      "station": "PULSE95",
+      "subcategory": "Film & TV",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Did KPop Demon Hunters Dethrone Encanto to Become the Biggest Streaming Film of All Time?",
+      "station": "PULSE95",
+      "subcategory": "Film & TV",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Songs Carrying Me Through January",
+      "station": "PULSE95",
+      "subcategory": "Music",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "'I'm not really into politics'",
+      "station": "PULSE95",
+      "subcategory": "Politics & Policy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The Great Entertainment ",
+      "station": "PULSE95",
+      "subcategory": "Politics & Policy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Fool's Gold Standard Science?",
+      "station": "PULSE95",
+      "subcategory": "Politics & Policy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Wolves in Sheep's Clothing: Indiana Defensive Masterclass",
+      "station": "PULSE95",
+      "subcategory": "Sports",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Now, Joe Brady must embrace his reality",
+      "station": "PULSE95",
+      "subcategory": "Sports",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "you could be brilliant...but you're coward.",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "discomfort is the price you pay for a fulfilling life",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "I want to do everything, so I do nothing",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Don't Need To Document Everything",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "11 books that have changed my fucking life",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "how to become friends with literally anyone",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "you don't just need to touch grass, you need friends",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Stop copy-pasting spreadsheets into ChatGPT.",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Open Source Deep Learning Curriculum",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "success",
+      "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "id": "recj1TEmQNCWR9yxl"
+    },
+    {
+      "status": "error",
+      "title": "The personal finance book that changed my life",
+      "station": "GROWTH96",
+      "subcategory": "Self-Help & Productivity",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Should Spend More on Clothes",
+      "station": "GROWTH96",
+      "subcategory": "Food, Travel & Lifestyle",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "This week's entertainment and lifestyle digest",
+      "station": "GROWTH96",
+      "subcategory": "Food, Travel & Lifestyle",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "you don't just need to touch grass, you need friends",
+      "station": "GROWTH96",
+      "subcategory": "Health & Wellness",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "How to Improve Your EV Bioprocess? | Q1-2026",
+      "station": "GROWTH96",
+      "subcategory": "Sciences",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The Work Beneath the Noise",
+      "station": "GROWTH96",
+      "subcategory": "Sciences",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Science Changes. That's the Point. ",
+      "station": "GROWTH96",
+      "subcategory": "Sciences",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Fool's Gold Standard Science?",
+      "station": "GROWTH96",
+      "subcategory": "Sciences",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "you could be brilliant...but you're coward.",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "we've created a society where artists can't make any money",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "'I'm not really into politics'",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The death of the public intellectual",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Are Not a Thought Daughter: On Intellectualism, Consumerism, and the Flattening of Identity",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Not everything is \"performative\"",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "in defense of pretension. ",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Substack isn't solving anti-intellectualism ",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Don't Need To Document Everything",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "the gen z resilience drought",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Should Spend More on Clothes",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Science Changes. That's the Point. ",
+      "station": "CREATE97",
+      "subcategory": "Essays & Commentary",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "literary terms you probably need to know, part 1",
+      "station": "CREATE97",
+      "subcategory": "Writing & Storytelling",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "some essays on how to write essays (p. 1)",
+      "station": "CREATE97",
+      "subcategory": "Writing & Storytelling",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "11 books that have changed my fucking life",
+      "station": "CREATE97",
+      "subcategory": "Writing & Storytelling",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Shoebox's Curated Calls for Art, Grants & Residencies + More... \ud83c\udfa8",
+      "station": "CREATE97",
+      "subcategory": "Arts & Crafts",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Unpopular opinion alert: We have enough books set in LA & NY",
+      "station": "CREATE97",
+      "subcategory": "Arts & Crafts",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Nihilism vs. Existentialism vs. Absurdism",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "The death of the public intellectual",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "discomfort is the price you pay for a fulfilling life",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "You Are Not a Thought Daughter: On Intellectualism, Consumerism, and the Flattening of Identity",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "I want to do everything, so I do nothing",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Not everything is \"performative\"",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "in defense of pretension. ",
+      "station": "CREATE97",
+      "subcategory": "Philosophy",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    },
+    {
+      "status": "error",
+      "title": "Unpopular opinion alert: We have enough books set in LA & NY",
+      "station": "CREATE97",
+      "subcategory": "Miscellaneous",
+      "error": "422 Client Error: Unprocessable Entity for url: https://api.airtable.com/v0/app7d0uZTpvK99mKP/Articles"
+    }
+  ]
+}
