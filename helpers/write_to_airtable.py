@@ -153,7 +153,7 @@ def create_newsletter(newsletter_data: dict, station: str) -> dict:
     fields = {
         'name': newsletter_data['newsletter_name'],
         'author': newsletter_data['author_name'] or '',
-        'url': newsletter_data['newsletter_url'],
+        'link': newsletter_data['newsletter_url'],
         'station_main': station,
         'bio': '',  # User can fill in later
         'submitted_date': date.today().isoformat(),

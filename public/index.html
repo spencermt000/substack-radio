@@ -172,9 +172,13 @@
     // DATE SEED UTILITIES
     // ============================================
     const getCSTDate = () => {
-      const now = new Date();
-      const cstDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
-      return cstDate.toISOString().split('T')[0];
+      const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Chicago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      return formatter.format(new Date());
     };
 
     const simpleHash = (str) => {
@@ -264,7 +268,7 @@
     const parseStationCode = (code) => {
       if (!code) return { station: null, frequency: '1' };
 
-      const stationMap = { '94': 'CAPITAL94', '95': 'PULSE95', '96': 'GROWTH96', '97': 'CREATE97' };
+      const stationMap = { '94': 'MONEY94', '95': 'PULSE95', '96': 'GROWTH96', '97': 'CREATE97' };
 
       if (code.includes('.')) {
         const [stationNum, freq] = code.split('.');
