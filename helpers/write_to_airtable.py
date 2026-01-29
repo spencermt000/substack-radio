@@ -128,8 +128,10 @@ def create_article(article_data: dict, station: str, subcategory: str) -> dict:
         'subcategory': subcategory,
         'submitted_date': date.today().isoformat(),
         'approved': False,  # Requires manual approval
-        'image_url': article_data['thumbnail_url'] or '',
     }
+    # Only include image_url if it's a valid non-empty URL
+    if article_data.get('thumbnail_url'):
+        fields['image_url'] = article_data['thumbnail_url']
 
     payload = {'fields': fields}
     result = airtable_request(ARTICLES_TABLE, 'POST', payload)

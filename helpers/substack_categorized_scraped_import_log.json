@@ -1,5 +1,5 @@
 {
-  "imported_at": "2026-01-28 19:14:20",
+  "imported_at": "2026-01-28 19:18:57",
   "source_file": "substack_categorized_scraped.json",
   "format": "categorized",
   "successful": 2,
@@ -24,7 +24,7 @@
       "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
       "station": "MONEY94",
       "subcategory": "Startups & Entrepreneurship",
-      "id": "recBE8eD7fiPnXtQj"
+      "id": "rect4mAlkxZkZGNTr"
     },
     {
       "status": "error",
@@ -227,7 +227,7 @@
       "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recj1TEmQNCWR9yxl"
+      "id": "recs24xXyKRJRRKON"
     },
     {
       "status": "error",
