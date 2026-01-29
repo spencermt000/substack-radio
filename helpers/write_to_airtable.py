@@ -129,9 +129,9 @@ def create_article(article_data: dict, station: str, subcategory: str) -> dict:
         'submitted_date': date.today().isoformat(),
         'approved': False,  # Requires manual approval
     }
-    # Only include image_url if it's a valid HTTP(S) URL
-    thumbnail = article_data.get('thumbnail_url', '')
-    if thumbnail and thumbnail.startswith(('http://', 'https://')):
+    # Only include image_url if it's a valid HTTP(S) URL string
+    thumbnail = article_data.get('thumbnail_url')
+    if isinstance(thumbnail, str) and thumbnail.startswith(('http://', 'https://')):
         fields['image_url'] = thumbnail
 
     payload = {'fields': fields}
