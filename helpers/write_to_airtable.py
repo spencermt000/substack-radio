@@ -323,6 +323,14 @@ def import_from_scraped_json(json_path: str, station: str = None, subcategory: s
         print(f"Total articles: {data.get('successful', len(articles))}")
         if data.get('failed', 0) > 0:
             print(f"Failed scrapes: {data.get('failed', 0)}")
+
+        # Get station/subcategory from JSON if not passed as args
+        if not station and data.get('station'):
+            station = data['station']
+            print(f"Station from JSON: {station}")
+        if not subcategory and data.get('subcategory'):
+            subcategory = data['subcategory']
+            print(f"Subcategory from JSON: {subcategory}")
     elif isinstance(data, list):
         # Direct array of article objects
         articles = data
@@ -346,7 +354,7 @@ def import_from_scraped_json(json_path: str, station: str = None, subcategory: s
         print(f"  ... and {len(articles) - 3} more")
     print("=" * 50)
 
-    # Get station and subcategory if not provided
+    # Get station and subcategory if not provided (prompt if still missing)
     if not station:
         station = select_station()
     if not subcategory:
@@ -453,6 +461,10 @@ def import_newsletters_from_scraped_json(json_path: str, station: str = None):
     # Handle different JSON formats
     if 'articles' in data:
         articles = data['articles']
+        # Get station from JSON if not passed as arg
+        if not station and data.get('station'):
+            station = data['station']
+            print(f"Station from JSON: {station}")
     elif isinstance(data, list):
         articles = data
     else:

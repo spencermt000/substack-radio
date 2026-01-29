@@ -178,8 +178,12 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
         1. Simple array of URLs:
            ["https://example.substack.com/p/article1", "https://..."]
 
-        2. Array of objects with url field:
-           [{"url": "https://...", "note": "optional metadata"}, ...]
+        2. Object with station, subcategory, and urls:
+           {
+             "station": "CAPITAL94",
+             "subcategory": "Markets & Investing",
+             "urls": ["https://...", "https://..."]
+           }
 
     Returns:
         List of scraped article data
@@ -189,6 +193,10 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
     with open(json_path, 'r') as f:
         data = json.load(f)
 
+    # Extract station/subcategory if present
+    station = None
+    subcategory = None
+
     # Normalize to list of URLs
     urls = []
     if isinstance(data, list):
@@ -197,13 +205,18 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
                 urls.append(item)
             elif isinstance(item, dict) and 'url' in item:
                 urls.append(item['url'])
-    elif isinstance(data, dict) and 'urls' in data:
-        # Support {"urls": [...]} format
-        for item in data['urls']:
-            if isinstance(item, str):
-                urls.append(item)
-            elif isinstance(item, dict) and 'url' in item:
-                urls.append(item['url'])
+    elif isinstance(data, dict):
+        # Extract station/subcategory metadata
+        station = data.get('station')
+        subcategory = data.get('subcategory')
+
+        # Get URLs from 'urls' key
+        if 'urls' in data:
+            for item in data['urls']:
+                if isinstance(item, str):
+                    urls.append(item)
+                elif isinstance(item, dict) and 'url' in item:
+                    urls.append(item['url'])
 
     print(f"Found {len(urls)} URLs to scrape")
     print("=" * 60)
@@ -237,6 +250,8 @@ def scrape_from_json(json_path: str, output_path: str = None) -> list:
     # Save results
     output_data = {
         'scraped_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'station': station,
+        'subcategory': subcategory,
         'total': len(urls),
         'successful': len(results),
         'failed': len(errors),
