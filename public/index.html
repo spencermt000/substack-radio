@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Substack Radio</title>
+  <meta name="description" content="Discover the best Substack articles and newsletters, curated daily across 4 radio stations.">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'display': ['Space Grotesk', 'system-ui', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            'capital': { DEFAULT: '#00B894', light: '#00D084', dark: '#00896B' },
+            'pulse': { DEFAULT: '#D63031', light: '#FF7675', dark: '#A32526' },
+            'growth': { DEFAULT: '#6C5CE7', light: '#A29BFE', dark: '#5244B8' },
+            'create': { DEFAULT: '#00CEC9', light: '#81ECEC', dark: '#009E9A' },
+            'radio': {
+              'dark': '#1a1a2e',
+              'darker': '#0f0f1a',
+              'accent': '#eab308',
+              'cream': '#fef3c7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+    }
+
+    .station-glow {
+      box-shadow: 0 0 30px -5px var(--glow-color, rgba(234, 179, 8, 0.3));
+    }
+
+    .dial-indicator {
+      transition: all 0.3s ease;
+    }
+
+    .dial-indicator.active {
+      transform: scale(1.2);
+    }
+
+    .vintage-border {
+      border: 2px solid rgba(234, 179, 8, 0.3);
+      box-shadow:
+        inset 0 0 20px rgba(0,0,0,0.5),
+        0 0 10px rgba(234, 179, 8, 0.1);
+    }
+
+    .on-air-pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .frequency-display {
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1a2e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3d3d5c;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4d4d6c;
+    }
+  </style>
+</head>
+<body class="text-gray-100">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo } = React;
+
+    // ============================================
+    // STATION CONFIGURATION
+    // ============================================
+    const STATIONS_CONFIG = {
+      CAPITAL94: {
+        name: "CAPITAL94",
+        displayName: "Business, Finance & Innovation",
+        color: "#00B894",
+        colorClass: "capital",
+        subcategories: [
+          { code: "94.1", name: "The Capital Mix", slug: "main-mix" },
+          { code: "94.2", name: "Markets & Investing", slug: "markets" },
+          { code: "94.3", name: "Startups & Tech", slug: "startups" },
+          { code: "94.4", name: "Economics & Business", slug: "economics" },
+          { code: "94.5", name: "Personal Finance & Indie", slug: "finance" }
+        ]
+      },
+      PULSE95: {
+        name: "PULSE95",
+        displayName: "Media, Culture & Current Events",
+        color: "#D63031",
+        colorClass: "pulse",
+        subcategories: [
+          { code: "95.1", name: "The Pulse Mix", slug: "main-mix" },
+          { code: "95.2", name: "News & Current Events", slug: "news" },
+          { code: "95.3", name: "Pop Culture & Entertainment", slug: "culture" },
+          { code: "95.4", name: "Politics & Society", slug: "politics" },
+          { code: "95.5", name: "Sports & Competition", slug: "sports" }
+        ]
+      },
+      GROWTH96: {
+        name: "GROWTH96",
+        displayName: "Life, Mind & Wellness",
+        color: "#6C5CE7",
+        colorClass: "growth",
+        subcategories: [
+          { code: "96.1", name: "The Growth Mix", slug: "main-mix" },
+          { code: "96.2", name: "Psychology & Self-Help", slug: "psychology" },
+          { code: "96.3", name: "Food, Travel & Lifestyle", slug: "lifestyle" },
+          { code: "96.4", name: "Productivity & Learning", slug: "productivity" },
+          { code: "96.5", name: "Health & Wellness", slug: "health" }
+        ]
+      },
+      CREATE97: {
+        name: "CREATE97",
+        displayName: "Essays, Stories & Ideas",
+        color: "#00CEC9",
+        colorClass: "create",
+        subcategories: [
+          { code: "97.1", name: "The Creative Mix", slug: "main-mix" },
+          { code: "97.2", name: "Essays & Commentary", slug: "essays" },
+          { code: "97.3", name: "Fiction & Storytelling", slug: "fiction" },
+          { code: "97.4", name: "Philosophy & Big Ideas", slug: "philosophy" },
+          { code: "97.5", name: "Art & Craft", slug: "craft" }
+        ]
+      }
+    };
+
+    // ============================================
+    // DATE SEED UTILITIES
+    // ============================================
+    const getCSTDate = () => {
+      const now = new Date();
+      const cstDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+      return cstDate.toISOString().split('T')[0];
+    };
+
+    const simpleHash = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash = hash & hash;
+      }
+      return Math.abs(hash);
+    };
+
+    const selectFeatured = (items, date, stationCode, index = 0) => {
+      if (!items || items.length === 0) return null;
+      const seed = `${date}-${stationCode}-${index}`;
+      const hash = simpleHash(seed);
+      return items[hash % items.length];
+    };
+
+    const selectMultiple = (items, date, stationCode, count = 2) => {
+      if (!items || items.length === 0) return [];
+      const selected = [];
+      const available = [...items];
+
+      for (let i = 0; i < Math.min(count, available.length); i++) {
+        const seed = `${date}-${stationCode}-multi-${i}`;
+        const hash = simpleHash(seed);
+        const idx = hash % available.length;
+        selected.push(available.splice(idx, 1)[0]);
+      }
+
+      return selected;
+    };
+
+    // ============================================
+    // API UTILITIES
+    // ============================================
+    const api = {
+      async fetchArticles(station = null) {
+        const params = station ? `?station=${station}` : '';
+        const response = await fetch(`/api/articles${params}`);
+        if (!response.ok) throw new Error('Failed to fetch articles');
+        const data = await response.json();
+        return data.articles || [];
+      },
+
+      async fetchNewsletters(station = null) {
+        const params = station ? `?station=${station}` : '';
+        const response = await fetch(`/api/newsletters${params}`);
+        if (!response.ok) throw new Error('Failed to fetch newsletters');
+        const data = await response.json();
+        return data.newsletters || [];
+      },
+
+      async submit(type, data) {
+        const response = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, data }),
+        });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Submission failed');
+        }
+        return response.json();
+      }
+    };
+
+    // ============================================
+    // ROUTING
+    // ============================================
+    const useRouter = () => {
+      const [route, setRoute] = useState(window.location.hash || '#/');
+
+      useEffect(() => {
+        const handleHashChange = () => setRoute(window.location.hash || '#/');
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+      }, []);
+
+      const navigate = useCallback((path) => {
+        window.location.hash = path;
+      }, []);
+
+      return { route, navigate };
+    };
+
+    const parseStationCode = (code) => {
+      if (!code) return { station: null, frequency: '1' };
+
+      const stationMap = { '94': 'CAPITAL94', '95': 'PULSE95', '96': 'GROWTH96', '97': 'CREATE97' };
+
+      if (code.includes('.')) {
+        const [stationNum, freq] = code.split('.');
+        return { station: stationMap[stationNum], frequency: freq };
+      } else {
+        const upper = code.toUpperCase();
+        if (STATIONS_CONFIG[upper]) {
+          return { station: upper, frequency: '1' };
+        }
+        return { station: null, frequency: '1' };
+      }
+    };
+
+    // ============================================
+    // COMPONENTS
+    // ============================================
+
+    // Header Component
+    const Header = ({ navigate }) => (
+      <header className="bg-radio-darker/80 backdrop-blur-sm border-b border-radio-accent/20 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <a
+            href="#/"
+            onClick={(e) => { e.preventDefault(); navigate('#/'); }}
+            className="flex items-center gap-3 hover:opacity-80 transition"
+          >
+            <div className="w-10 h-10 rounded-full bg-radio-accent flex items-center justify-center">
+              <span className="text-radio-dark font-bold text-lg">SR</span>
+            </div>
+            <div>
+              <h1 className="font-mono font-bold text-xl text-radio-cream tracking-wider">SUBSTACK RADIO</h1>
+              <p className="text-xs text-gray-500 tracking-widest">TUNE IN DAILY</p>
+            </div>
+          </a>
+
+          <nav className="flex items-center gap-6">
+            <a
+              href="#/"
+              onClick={(e) => { e.preventDefault(); navigate('#/'); }}
+              className="text-sm text-gray-400 hover:text-radio-cream transition"
+            >
+              Stations
+            </a>
+            <a
+              href="#/artists"
+              onClick={(e) => { e.preventDefault(); navigate('#/artists'); }}
+              className="text-sm text-gray-400 hover:text-radio-cream transition"
+            >
+              Artists
+            </a>
+            <a
+              href="#/submit"
+              onClick={(e) => { e.preventDefault(); navigate('#/submit'); }}
+              className="text-sm bg-radio-accent/20 text-radio-accent px-4 py-2 rounded-full hover:bg-radio-accent/30 transition"
+            >
+              Submit
+            </a>
+          </nav>
+        </div>
+      </header>
+    );
+
+    // Station Card Component
+    const StationCard = ({ station, config, featuredArticle, featuredNewsletter, navigate }) => {
+      const mainFreq = config.subcategories[0].code;
+
+      return (
+        <div
+          className="vintage-border rounded-2xl p-6 bg-radio-darker/50 hover:bg-radio-darker/70 transition-all duration-300 group"
+          style={{ '--glow-color': `${config.color}40` }}
+        >
+          {/* Station Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div
+                  className="w-3 h-3 rounded-full on-air-pulse"
+                  style={{ backgroundColor: config.color }}
+                />
+                <span className="text-xs text-gray-500 tracking-widest">ON AIR</span>
+              </div>
+              <h2
+                className="font-mono font-bold text-2xl tracking-wider"
+                style={{ color: config.color }}
+              >
+                {config.name}
+              </h2>
+              <p className="text-sm text-gray-400 mt-1">{config.displayName}</p>
+            </div>
+            <div
+              className="frequency-display font-mono text-3xl font-bold opacity-50 group-hover:opacity-100 transition"
+              style={{ color: config.color }}
+            >
+              {mainFreq}
+            </div>
+          </div>
+
+          {/* Featured Article */}
+          {featuredArticle ? (
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2 tracking-wider">NOW PLAYING</p>
+              <a
+                href={featuredArticle.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group/article"
+              >
+                {featuredArticle.image_url && (
+                  <img
+                    src={featuredArticle.image_url}
+                    alt=""
+                    className="w-full h-32 object-cover rounded-lg mb-3 opacity-80 group-hover/article:opacity-100 transition"
+                  />
+                )}
+                <h3 className="font-semibold text-radio-cream group-hover/article:text-white transition line-clamp-2">
+                  {featuredArticle.title}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">{featuredArticle.author}</p>
+              </a>
+            </div>
+          ) : (
+            <div className="mb-4 py-8 text-center text-gray-600">
+              <p className="text-sm">No articles yet</p>
+            </div>
+          )}
+
+          {/* Featured Newsletter */}
+          {featuredNewsletter && (
+            <div className="border-t border-gray-800 pt-4 mt-4">
+              <p className="text-xs text-gray-500 mb-2 tracking-wider">FEATURED ARTIST</p>
+              <a
+                href={featuredNewsletter.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 group/newsletter"
+              >
+                {featuredNewsletter.image_url ? (
+                  <img
+                    src={featuredNewsletter.image_url}
+                    alt=""
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                    style={{ backgroundColor: config.color }}
+                  >
+                    {featuredNewsletter.name?.charAt(0) || '?'}
+                  </div>
+                )}
+                <div>
+                  <p className="font-medium text-gray-300 group-hover/newsletter:text-white transition">
+                    {featuredNewsletter.name}
+                  </p>
+                  <p className="text-xs text-gray-500">{featuredNewsletter.author}</p>
+                </div>
+              </a>
+            </div>
+          )}
+
+          {/* Tune In Button */}
+          <button
+            onClick={() => navigate(`#/station/${mainFreq}`)}
+            className="w-full mt-4 py-3 rounded-xl font-mono font-semibold tracking-wider transition-all duration-300"
+            style={{
+              backgroundColor: `${config.color}20`,
+              color: config.color,
+              border: `1px solid ${config.color}40`
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = `${config.color}40`;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = `${config.color}20`;
+            }}
+          >
+            TUNE IN TO {mainFreq}
+          </button>
+        </div>
+      );
+    };
+
+    // Radio Dial Component
+    const RadioDial = ({ station, currentFreq, navigate }) => {
+      const config = STATIONS_CONFIG[station];
+      if (!config) return null;
+
+      return (
+        <div className="vintage-border rounded-xl p-4 bg-radio-darker/50">
+          <div className="text-center mb-4">
+            <span
+              className="font-mono font-bold text-lg tracking-wider"
+              style={{ color: config.color }}
+            >
+              {config.name} DIAL
+            </span>
+          </div>
+
+          {/* Frequency Buttons */}
+          <div className="flex flex-col gap-2">
+            {config.subcategories.map((sub) => {
+              const isActive = sub.code === currentFreq;
+              return (
+                <button
+                  key={sub.code}
+                  onClick={() => navigate(`#/station/${sub.code}`)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                    isActive
+                      ? 'bg-radio-accent/20'
+                      : 'hover:bg-gray-800/50'
+                  }`}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full transition-all ${isActive ? 'scale-125' : ''}`}
+                    style={{
+                      backgroundColor: isActive ? config.color : '#4a4a6a',
+                      boxShadow: isActive ? `0 0 10px ${config.color}` : 'none'
+                    }}
+                  />
+                  <span
+                    className={`font-mono font-semibold ${isActive ? 'text-white' : 'text-gray-400'}`}
+                  >
+                    {sub.code}
+                  </span>
+                  <span className={`text-sm ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
+                    {sub.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    // Article Card Component
+    const ArticleCard = ({ article, color, size = 'normal' }) => (
+      <a
+        href={article.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`block vintage-border rounded-xl overflow-hidden bg-radio-darker/30 hover:bg-radio-darker/50 transition group ${
+          size === 'large' ? 'p-6' : 'p-4'
+        }`}
+      >
+        {article.image_url && size === 'large' && (
+          <img
+            src={article.image_url}
+            alt=""
+            className="w-full h-48 object-cover rounded-lg mb-4 opacity-80 group-hover:opacity-100 transition"
+          />
+        )}
+        <div className="flex items-start gap-3">
+          {article.image_url && size !== 'large' && (
+            <img
+              src={article.image_url}
+              alt=""
+              className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <h3 className={`font-semibold text-radio-cream group-hover:text-white transition ${
+              size === 'large' ? 'text-xl' : 'text-base'
+            } line-clamp-2`}>
+              {article.title}
+            </h3>
+            {article.description && size === 'large' && (
+              <p className="text-gray-400 text-sm mt-2 line-clamp-2">{article.description}</p>
+            )}
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-gray-500">{article.author}</span>
+              {article.subcategory && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <span
+                    className="text-xs px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: `${color}20`, color }}
+                  >
+                    {article.subcategory}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </a>
+    );
+
+    // ============================================
+    // PAGES
+    // ============================================
+
+    // Home Page
+    const HomePage = ({ navigate }) => {
+      const [articles, setArticles] = useState([]);
+      const [newsletters, setNewsletters] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      const today = useMemo(() => getCSTDate(), []);
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const [articlesData, newslettersData] = await Promise.all([
+              api.fetchArticles(),
+              api.fetchNewsletters()
+            ]);
+            setArticles(articlesData);
+            setNewsletters(newslettersData);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, []);
+
+      const getFeaturedForStation = useCallback((stationKey) => {
+        const stationArticles = articles.filter(a => a.station_main === stationKey);
+        const stationNewsletters = newsletters.filter(n => n.station_main === stationKey);
+
+        return {
+          article: selectFeatured(stationArticles, today, `${stationKey}-main`),
+          newsletter: selectFeatured(stationNewsletters, today, `${stationKey}-newsletter`)
+        };
+      }, [articles, newsletters, today]);
+
+      if (loading) {
+        return (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-radio-accent/30 border-t-radio-accent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-gray-400">Tuning in...</p>
+            </div>
+          </div>
+        );
+      }
+
+      if (error) {
+        return (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center max-w-md">
+              <p className="text-red-400 mb-4">Failed to load stations</p>
+              <p className="text-gray-500 text-sm">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-radio-accent/20 text-radio-accent rounded-lg"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Hero */}
+          <div className="text-center mb-12">
+            <p className="text-radio-accent font-mono tracking-widest mb-2">{today}</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-radio-cream mb-4">
+              Today's Broadcast
+            </h1>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              Discover curated Substack articles and newsletters across four stations.
+              Same great content for everyone, refreshed daily.
+            </p>
+          </div>
+
+          {/* Station Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.entries(STATIONS_CONFIG).map(([key, config]) => {
+              const featured = getFeaturedForStation(key);
+              return (
+                <StationCard
+                  key={key}
+                  station={key}
+                  config={config}
+                  featuredArticle={featured.article}
+                  featuredNewsletter={featured.newsletter}
+                  navigate={navigate}
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    // Station Page
+    const StationPage = ({ stationCode, navigate }) => {
+      const [articles, setArticles] = useState([]);
+      const [newsletters, setNewsletters] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      const { station, frequency } = parseStationCode(stationCode);
+      const config = STATIONS_CONFIG[station];
+      const currentFreq = station ? `${station.slice(-2)}.${frequency}` : null;
+      const isMainMix = frequency === '1';
+
+      const today = useMemo(() => getCSTDate(), []);
+
+      useEffect(() => {
+        if (!station) return;
+
+        const fetchData = async () => {
+          setLoading(true);
+          try {
+            const [articlesData, newslettersData] = await Promise.all([
+              api.fetchArticles(station),
+              api.fetchNewsletters(station)
+            ]);
+            setArticles(articlesData);
+            setNewsletters(newslettersData);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, [station]);
+
+      if (!config) {
+        return (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-gray-400 mb-4">Station not found</p>
+              <button
+                onClick={() => navigate('#/')}
+                className="px-4 py-2 bg-radio-accent/20 text-radio-accent rounded-lg"
+              >
+                Back to Stations
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      const currentSubcat = config.subcategories.find(s => s.code === currentFreq);
+      const subcatName = currentSubcat?.name || 'Unknown';
+
+      // Filter articles by subcategory for non-main frequencies
+      const filteredArticles = isMainMix
+        ? articles
+        : articles.filter(a => a.subcategory === subcatName);
+
+      const featuredArticle = selectFeatured(filteredArticles, today, currentFreq);
+      const featuredNewsletter = isMainMix ? selectFeatured(newsletters, today, `${currentFreq}-newsletter`) : null;
+      const additionalArticles = selectMultiple(
+        filteredArticles.filter(a => a.id !== featuredArticle?.id),
+        today,
+        currentFreq,
+        isMainMix ? 4 : 3
+      );
+
+      return (
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('#/')}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
+          >
+            <span>←</span>
+            <span>All Stations</span>
+          </button>
+
+          {/* Station Header */}
+          <div className="flex items-start justify-between mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div
+                  className="w-4 h-4 rounded-full on-air-pulse"
+                  style={{ backgroundColor: config.color }}
+                />
+                <span className="text-sm text-gray-500 tracking-widest">ON AIR</span>
+              </div>
+              <h1
+                className="font-mono font-bold text-4xl md:text-5xl tracking-wider"
+                style={{ color: config.color }}
+              >
+                {config.name}
+              </h1>
+              <p className="text-gray-400 mt-2">{config.displayName}</p>
+              <p className="text-lg text-radio-cream mt-1">{subcatName}</p>
+            </div>
+            <div
+              className="frequency-display font-mono text-5xl md:text-6xl font-bold"
+              style={{ color: config.color }}
+            >
+              {currentFreq}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="w-12 h-12 border-4 border-radio-accent/30 border-t-radio-accent rounded-full animate-spin mx-auto" />
+                </div>
+              ) : (
+                <>
+                  {/* Featured Article */}
+                  {featuredArticle && (
+                    <div>
+                      <p className="text-xs text-gray-500 tracking-widest mb-3">NOW PLAYING</p>
+                      <ArticleCard article={featuredArticle} color={config.color} size="large" />
+                    </div>
+                  )}
+
+                  {/* Featured Newsletter (main mix only) */}
+                  {isMainMix && featuredNewsletter && (
+                    <div className="vintage-border rounded-xl p-6 bg-radio-darker/30">
+                      <p className="text-xs text-gray-500 tracking-widest mb-3">FEATURED ARTIST</p>
+                      <a
+                        href={featuredNewsletter.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 group"
+                      >
+                        {featuredNewsletter.image_url ? (
+                          <img
+                            src={featuredNewsletter.image_url}
+                            alt=""
+                            className="w-16 h-16 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div
+                            className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white"
+                            style={{ backgroundColor: config.color }}
+                          >
+                            {featuredNewsletter.name?.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-semibold text-lg text-radio-cream group-hover:text-white transition">
+                            {featuredNewsletter.name}
+                          </h3>
+                          <p className="text-gray-500">{featuredNewsletter.author}</p>
+                          {featuredNewsletter.bio && (
+                            <p className="text-gray-400 text-sm mt-1 line-clamp-2">{featuredNewsletter.bio}</p>
+                          )}
+                        </div>
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Also Playing */}
+                  {additionalArticles.length > 0 && (
+                    <div>
+                      <p className="text-xs text-gray-500 tracking-widest mb-3">
+                        {isMainMix ? 'ALSO PLAYING TODAY' : 'MORE ON THIS FREQUENCY'}
+                      </p>
+                      <div className="space-y-3">
+                        {additionalArticles.map(article => (
+                          <ArticleCard key={article.id} article={article} color={config.color} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {filteredArticles.length === 0 && (
+                    <div className="text-center py-12 text-gray-500">
+                      <p>No articles on this frequency yet.</p>
+                      <button
+                        onClick={() => navigate('#/submit')}
+                        className="mt-4 text-radio-accent hover:underline"
+                      >
+                        Submit one?
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Sidebar - Dial */}
+            <div className="space-y-6">
+              <RadioDial station={station} currentFreq={currentFreq} navigate={navigate} />
+
+              {/* Quick Stats */}
+              <div className="vintage-border rounded-xl p-4 bg-radio-darker/30">
+                <p className="text-xs text-gray-500 tracking-widest mb-3">STATION INFO</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Articles</span>
+                    <span className="text-gray-300">{articles.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Newsletters</span>
+                    <span className="text-gray-300">{newsletters.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Date</span>
+                    <span className="text-gray-300">{today}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Artists Page
+    const ArtistsPage = ({ navigate }) => {
+      const [newsletters, setNewsletters] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      const today = useMemo(() => getCSTDate(), []);
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const data = await api.fetchNewsletters();
+            setNewsletters(data);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, []);
+
+      return (
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-radio-cream mb-4">Featured Artists</h1>
+            <p className="text-gray-400">Discover newsletters and authors across all stations</p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 border-4 border-radio-accent/30 border-t-radio-accent rounded-full animate-spin mx-auto" />
+            </div>
+          ) : (
+            <div className="space-y-12">
+              {Object.entries(STATIONS_CONFIG).map(([key, config]) => {
+                const stationNewsletters = newsletters.filter(n => n.station_main === key);
+                const featured = selectMultiple(stationNewsletters, today, `${key}-artists`, 3);
+
+                if (featured.length === 0) return null;
+
+                return (
+                  <div key={key}>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: config.color }}
+                      />
+                      <h2
+                        className="font-mono font-bold text-xl tracking-wider"
+                        style={{ color: config.color }}
+                      >
+                        {config.name}
+                      </h2>
+                      <span className="text-gray-500 text-sm">{config.displayName}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {featured.map(newsletter => (
+                        <a
+                          key={newsletter.id}
+                          href={newsletter.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="vintage-border rounded-xl p-5 bg-radio-darker/30 hover:bg-radio-darker/50 transition group"
+                        >
+                          <div className="flex items-center gap-4 mb-3">
+                            {newsletter.image_url ? (
+                              <img
+                                src={newsletter.image_url}
+                                alt=""
+                                className="w-14 h-14 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div
+                                className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"
+                                style={{ backgroundColor: config.color }}
+                              >
+                                {newsletter.name?.charAt(0)}
+                              </div>
+                            )}
+                            <div>
+                              <h3 className="font-semibold text-radio-cream group-hover:text-white transition">
+                                {newsletter.name}
+                              </h3>
+                              <p className="text-sm text-gray-500">{newsletter.author}</p>
+                            </div>
+                          </div>
+                          {newsletter.bio && (
+                            <p className="text-sm text-gray-400 line-clamp-2">{newsletter.bio}</p>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Submit Page
+    const SubmitPage = ({ navigate }) => {
+      const [tab, setTab] = useState('article');
+      const [submitting, setSubmitting] = useState(false);
+      const [success, setSuccess] = useState(false);
+      const [error, setError] = useState(null);
+
+      const [articleForm, setArticleForm] = useState({
+        title: '',
+        author: '',
+        url: '',
+        station_main: '',
+        subcategory: '',
+        description: '',
+        image_url: '',
+      });
+
+      const [newsletterForm, setNewsletterForm] = useState({
+        name: '',
+        author: '',
+        url: '',
+        station_main: '',
+        bio: '',
+        image_url: '',
+      });
+
+      const [contactForm, setContactForm] = useState({
+        subject: '',
+        message: '',
+      });
+
+      const selectedStation = tab === 'article' ? articleForm.station_main : newsletterForm.station_main;
+      const stationConfig = STATIONS_CONFIG[selectedStation];
+
+      const handleArticleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setError(null);
+
+        try {
+          await api.submit('article', articleForm);
+          setSuccess(true);
+          setArticleForm({
+            title: '', author: '', url: '', station_main: '', subcategory: '', description: '', image_url: ''
+          });
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      const handleNewsletterSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setError(null);
+
+        try {
+          await api.submit('newsletter', newsletterForm);
+          setSuccess(true);
+          setNewsletterForm({
+            name: '', author: '', url: '', station_main: '', bio: '', image_url: ''
+          });
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      const handleContactSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setError(null);
+
+        try {
+          const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(contactForm),
+          });
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Failed to send message');
+          }
+
+          setSuccess('contact');
+          setContactForm({ subject: '', message: '' });
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      if (success) {
+        const isContact = success === 'contact';
+        return (
+          <div className="max-w-xl mx-auto px-4 py-16 text-center">
+            <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-green-400 text-3xl">✓</span>
+            </div>
+            <h1 className="text-2xl font-bold text-radio-cream mb-4">
+              {isContact ? 'Message sent!' : 'Thanks for your submission!'}
+            </h1>
+            <p className="text-gray-400 mb-8">
+              {isContact
+                ? "We've received your message and will get back to you if needed."
+                : 'Your submission will be reviewed and eligible to appear in 24 hours.'}
+            </p>
+            <button
+              onClick={() => setSuccess(false)}
+              className="px-6 py-3 bg-radio-accent/20 text-radio-accent rounded-xl hover:bg-radio-accent/30 transition"
+            >
+              {isContact ? 'Send Another Message' : 'Submit Another'}
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-radio-cream mb-2">Submit to Substack Radio</h1>
+            <p className="text-gray-400">Share great Substack content with the community</p>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-2 mb-8">
+            <button
+              onClick={() => setTab('article')}
+              className={`flex-1 py-3 rounded-xl font-semibold transition ${
+                tab === 'article'
+                  ? 'bg-radio-accent text-radio-dark'
+                  : 'bg-radio-darker text-gray-400 hover:text-white'
+              }`}
+            >
+              Submit Article
+            </button>
+            <button
+              onClick={() => setTab('newsletter')}
+              className={`flex-1 py-3 rounded-xl font-semibold transition ${
+                tab === 'newsletter'
+                  ? 'bg-radio-accent text-radio-dark'
+                  : 'bg-radio-darker text-gray-400 hover:text-white'
+              }`}
+            >
+              Submit Newsletter
+            </button>
+            <button
+              onClick={() => setTab('contact')}
+              className={`flex-1 py-3 rounded-xl font-semibold transition ${
+                tab === 'contact'
+                  ? 'bg-radio-accent text-radio-dark'
+                  : 'bg-radio-darker text-gray-400 hover:text-white'
+              }`}
+            >
+              Contact
+            </button>
+          </div>
+
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6">
+              {error}
+            </div>
+          )}
+
+          {/* Article Form */}
+          {tab === 'article' && (
+            <form onSubmit={handleArticleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Article URL *</label>
+                <input
+                  type="url"
+                  required
+                  value={articleForm.url}
+                  onChange={(e) => setArticleForm({ ...articleForm, url: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="https://example.substack.com/p/article-slug"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Article Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={articleForm.title}
+                  onChange={(e) => setArticleForm({ ...articleForm, title: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="The title of the article"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Author</label>
+                <input
+                  type="text"
+                  value={articleForm.author}
+                  onChange={(e) => setArticleForm({ ...articleForm, author: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="Author name"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Station *</label>
+                  <select
+                    required
+                    value={articleForm.station_main}
+                    onChange={(e) => setArticleForm({ ...articleForm, station_main: e.target.value, subcategory: '' })}
+                    className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  >
+                    <option value="">Select station</option>
+                    {Object.entries(STATIONS_CONFIG).map(([key, config]) => (
+                      <option key={key} value={key}>{config.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Subcategory *</label>
+                  <select
+                    required
+                    value={articleForm.subcategory}
+                    onChange={(e) => setArticleForm({ ...articleForm, subcategory: e.target.value })}
+                    className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                    disabled={!stationConfig}
+                  >
+                    <option value="">Select subcategory</option>
+                    {stationConfig?.subcategories.slice(1).map((sub) => (
+                      <option key={sub.code} value={sub.name}>{sub.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Description</label>
+                <textarea
+                  value={articleForm.description}
+                  onChange={(e) => setArticleForm({ ...articleForm, description: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none resize-none"
+                  rows={3}
+                  placeholder="Brief description of the article"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Image URL (optional)</label>
+                <input
+                  type="url"
+                  value={articleForm.image_url}
+                  onChange={(e) => setArticleForm({ ...articleForm, image_url: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-radio-accent text-radio-dark font-semibold rounded-xl hover:bg-radio-accent/90 transition disabled:opacity-50"
+              >
+                {submitting ? 'Submitting...' : 'Submit Article'}
+              </button>
+            </form>
+          )}
+
+          {/* Newsletter Form */}
+          {tab === 'newsletter' && (
+            <form onSubmit={handleNewsletterSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Newsletter URL *</label>
+                <input
+                  type="url"
+                  required
+                  value={newsletterForm.url}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, url: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="https://example.substack.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Newsletter Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={newsletterForm.name}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="Newsletter name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Author</label>
+                <input
+                  type="text"
+                  value={newsletterForm.author}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, author: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="Author name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Station *</label>
+                <select
+                  required
+                  value={newsletterForm.station_main}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, station_main: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                >
+                  <option value="">Select station</option>
+                  {Object.entries(STATIONS_CONFIG).map(([key, config]) => (
+                    <option key={key} value={key}>{config.name} - {config.displayName}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Bio</label>
+                <textarea
+                  value={newsletterForm.bio}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, bio: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none resize-none"
+                  rows={3}
+                  placeholder="Short bio about the newsletter/author"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Image URL (optional)</label>
+                <input
+                  type="url"
+                  value={newsletterForm.image_url}
+                  onChange={(e) => setNewsletterForm({ ...newsletterForm, image_url: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-radio-accent text-radio-dark font-semibold rounded-xl hover:bg-radio-accent/90 transition disabled:opacity-50"
+              >
+                {submitting ? 'Submitting...' : 'Submit Newsletter'}
+              </button>
+            </form>
+          )}
+
+          {/* Contact Form */}
+          {tab === 'contact' && (
+            <form onSubmit={handleContactSubmit} className="space-y-4">
+              <div className="bg-radio-darker/50 border border-gray-700 rounded-xl p-4 mb-4">
+                <p className="text-gray-400 text-sm">
+                  Have feedback, questions, or suggestions? Send us a message and we'll get back to you.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Subject *</label>
+                <input
+                  type="text"
+                  required
+                  value={contactForm.subject}
+                  onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none"
+                  placeholder="What's this about?"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Message *</label>
+                <textarea
+                  required
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  className="w-full px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none resize-none"
+                  rows={6}
+                  placeholder="Your message..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-radio-accent text-radio-dark font-semibold rounded-xl hover:bg-radio-accent/90 transition disabled:opacity-50"
+              >
+                {submitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          )}
+        </div>
+      );
+    };
+
+    // ============================================
+    // APP
+    // ============================================
+    const App = () => {
+      const { route, navigate } = useRouter();
+
+      // Parse route
+      let page = 'home';
+      let params = {};
+
+      if (route === '#/' || route === '' || route === '#') {
+        page = 'home';
+      } else if (route.startsWith('#/station/')) {
+        page = 'station';
+        params.stationCode = route.replace('#/station/', '');
+      } else if (route === '#/artists') {
+        page = 'artists';
+      } else if (route === '#/submit') {
+        page = 'submit';
+      }
+
+      return (
+        <div className="min-h-screen">
+          <Header navigate={navigate} />
+
+          <main>
+            {page === 'home' && <HomePage navigate={navigate} />}
+            {page === 'station' && <StationPage stationCode={params.stationCode} navigate={navigate} />}
+            {page === 'artists' && <ArtistsPage navigate={navigate} />}
+            {page === 'submit' && <SubmitPage navigate={navigate} />}
+          </main>
+
+          {/* Footer */}
+          <footer className="border-t border-gray-800 mt-16 py-8">
+            <div className="max-w-6xl mx-auto px-4 text-center text-gray-500 text-sm">
+              <p>Substack Radio — Discover great writing, daily.</p>
+              <p className="mt-2">
+                <a href="#/submit" onClick={(e) => { e.preventDefault(); navigate('#/submit'); }} className="text-radio-accent hover:underline">
+                  Submit content
+                </a>
+                {' • '}
+                <span>Curated with care</span>
+              </p>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    // Render
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

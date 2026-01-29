@@ -1,0 +1,12 @@
+{
+  "_comment": "Example JSON file for batch scraping. Delete this file or rename it.",
+  "_formats": "You can use any of these formats:",
+
+  "urls": [
+    "https://example.substack.com/p/article-one",
+    "https://another.substack.com/p/article-two",
+
+    {"url": "https://third.substack.com/p/article-three", "note": "optional metadata is ignored"},
+    {"url": "https://fourth.substack.com/p/article-four"}
+  ]
+}
