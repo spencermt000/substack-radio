@@ -18,15 +18,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { station } = req.query;
-
-    // Build filter formula
-    let filterFormula = 'AND({approved} = TRUE())';
-
-    if (station) {
-      filterFormula = `AND({approved} = TRUE(), {station_main} = '${station}')`;
-    }
-
+    // Fetch all approved newsletters - frontend handles station filtering
+    const filterFormula = '{approved} = TRUE()';
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Newsletters?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     const response = await fetch(url, {
@@ -50,7 +43,7 @@ export default async function handler(req, res) {
       name: record.fields.name || '',
       author: record.fields.author || '',
       url: record.fields.link || '',
-      station_main: record.fields.station || record.fields.station_main || '',
+      station_main: record.fields.station_main || record.fields.station || '',
       bio: record.fields.bio || '',
       image_url: record.fields.image_url || '',
       submitted_date: record.fields.submitted_date || '',

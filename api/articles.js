@@ -18,21 +18,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { station } = req.query;
-
-    // Build filter formula
-    let filterFormula = 'AND({approved} = TRUE())';
-
-    if (station) {
-      filterFormula = `AND({approved} = TRUE(), {station_main} = '${station}')`;
-    }
-
-    const params = new URLSearchParams({
-      filterByFormula: filterFormula,
-      sort: [{ field: 'submitted_date', direction: 'desc' }].map(s => JSON.stringify(s)).join(',')
-    });
-
-    // Airtable API has specific sort format
+    // Fetch all approved articles - frontend handles station filtering
+    const filterFormula = '{approved} = TRUE()';
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Articles?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     const response = await fetch(url, {
@@ -56,7 +43,7 @@ export default async function handler(req, res) {
       title: record.fields.title || '',
       author: record.fields.author || '',
       url: record.fields.link || '',
-      station_main: record.fields.station || record.fields.station_main || '',
+      station_main: record.fields.station_main || record.fields.station || '',
       subcategory: record.fields.subcategory || '',
       station_code: record.fields.station_code || '',
       description: record.fields.description || '',

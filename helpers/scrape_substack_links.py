@@ -110,6 +110,87 @@ def scrape_substack_article(url: str) -> dict:
         if og_image:
             result['thumbnail_url'] = og_image.get('content')
 
+    # Fallback: Twitter card image
+    if not result['thumbnail_url']:
+        twitter_image = soup.find('meta', attrs={'name': 'twitter:image'})
+        if twitter_image:
+            result['thumbnail_url'] = twitter_image.get('content')
+
+    # Fallback: Look for article cover image in page structure
+    if not result['thumbnail_url']:
+        # Substack often has cover images in specific containers
+        cover_selectors = [
+            ('img', {'class': re.compile(r'.*cover.*', re.I)}),
+            ('img', {'class': re.compile(r'.*hero.*', re.I)}),
+            ('img', {'class': re.compile(r'.*featured.*', re.I)}),
+            ('figure img', {}),
+            ('article img', {}),
+            ('.post-content img', {}),
+            ('.body img', {}),
+        ]
+        for selector, attrs in cover_selectors:
+            if ' ' in selector:
+                # Handle compound selectors like 'figure img'
+                img = soup.select_one(selector)
+            else:
+                img = soup.find(selector, attrs) if attrs else soup.find(selector)
+            if img and img.get('src'):
+                src = img.get('src')
+                # Ensure src is a string
+                if not isinstance(src, str):
+                    continue
+                # Skip tiny images (icons, avatars, etc.) by checking for common size patterns
+                if not any(x in src.lower() for x in ['icon', 'avatar', 'logo', '16x16', '32x32', '48x48', 'favicon']):
+                    result['thumbnail_url'] = src
+                    break
+
+    # Fallback: First reasonable image in the page
+    if not result['thumbnail_url']:
+        all_images = soup.find_all('img')
+        for img in all_images:
+            src = img.get('src', '')
+            # Ensure src is a string
+            if not isinstance(src, str):
+                continue
+            # Skip small/icon images and data URIs
+            if not src or src.startswith('data:'):
+                continue
+            if any(x in src.lower() for x in ['icon', 'avatar', 'logo', '16x', '32x', '48x', 'favicon', 'emoji', 'badge']):
+                continue
+            # Prefer images with width/height attributes indicating larger size
+            width = img.get('width', '')
+            height = img.get('height', '')
+            if width and height:
+                try:
+                    w, h = int(width), int(height)
+                    if w >= 200 and h >= 100:
+                        result['thumbnail_url'] = src
+                        break
+                except ValueError:
+                    pass
+            # If no size attrs, accept if it looks like a content image
+            if 'substackcdn.com' in src or 'substack-post-media' in src:
+                result['thumbnail_url'] = src
+                break
+
+    # Fallback: Author/newsletter profile image
+    if not result['thumbnail_url']:
+        # Look for profile/author images as last resort
+        profile_img = soup.find('img', {'class': re.compile(r'.*(profile|author|avatar).*', re.I)})
+        if profile_img and profile_img.get('src'):
+            src = profile_img.get('src')
+            if isinstance(src, str):
+                result['thumbnail_url'] = src
+
+    # Ensure thumbnail URL is absolute and is a string
+    if result['thumbnail_url'] and isinstance(result['thumbnail_url'], str):
+        if not result['thumbnail_url'].startswith('http'):
+            parsed = urlparse(url)
+            if result['thumbnail_url'].startswith('//'):
+                result['thumbnail_url'] = f"{parsed.scheme}:{result['thumbnail_url']}"
+            elif result['thumbnail_url'].startswith('/'):
+                result['thumbnail_url'] = f"{parsed.scheme}://{parsed.netloc}{result['thumbnail_url']}"
+
     if not result['newsletter_name']:
         og_site = soup.find('meta', property='og:site_name')
         if og_site:

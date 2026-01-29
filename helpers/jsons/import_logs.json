@@ -1,6 +1,6 @@
 {
-  "imported_at": "2026-01-28 19:24:15",
-  "source_file": "substack_categorized_scraped.json",
+  "imported_at": "2026-01-28 19:59:11",
+  "source_file": "jsons/substack_categorized_scraped.json",
   "format": "categorized",
   "successful": 65,
   "failed": 0,
@@ -10,455 +10,455 @@
       "title": "Gold Explodes Towards $5,500 & This Gold Developer Backed by Smart Money Is Poised To Win Big!",
       "station": "MONEY94",
       "subcategory": "Markets & Investing",
-      "id": "recaJJlj5Qqmk7mIm"
+      "id": "rec65AAXs2EJoZciY"
     },
     {
       "status": "success",
       "title": "Is Entrepreneurship Research Becoming Too Boring?",
       "station": "MONEY94",
       "subcategory": "Startups & Entrepreneurship",
-      "id": "recr7ANMjp4AhGb6V"
+      "id": "recbncuDiaQ0zLyQl"
     },
     {
       "status": "success",
       "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
       "station": "MONEY94",
       "subcategory": "Startups & Entrepreneurship",
-      "id": "recctiyvxvGT4KbtJ"
+      "id": "recVEd8ha1YtlvjW0"
     },
     {
       "status": "success",
       "title": "Stop copy-pasting spreadsheets into ChatGPT.",
       "station": "MONEY94",
       "subcategory": "Technology & Innovation",
-      "id": "rec7wNcKRKnc1iZF3"
+      "id": "recMH2X4AiaZGOxuN"
     },
     {
       "status": "success",
       "title": "Open Source Deep Learning Curriculum",
       "station": "MONEY94",
       "subcategory": "Technology & Innovation",
-      "id": "recP6pzzwmNzy3ZLX"
+      "id": "recrih0R7zlFtxtlH"
     },
     {
       "status": "success",
       "title": "The Work Beneath the Noise",
       "station": "MONEY94",
       "subcategory": "Technology & Innovation",
-      "id": "rec22RsRVPfOyWpYL"
+      "id": "recDEb8qf1AtcdbBE"
     },
     {
       "status": "success",
       "title": "we've created a society where artists can't make any money",
       "station": "MONEY94",
       "subcategory": "Economics & Business",
-      "id": "recH58ZQbRCqYLLmy"
+      "id": "rec6nQybpGJYvNTse"
     },
     {
       "status": "success",
       "title": "Your Personal Finance Starter Kit",
       "station": "MONEY94",
       "subcategory": "Personal Finance",
-      "id": "recqdHeYI9EpFHuXZ"
+      "id": "recljmrNIMtUg7ghG"
     },
     {
       "status": "success",
       "title": "The personal finance book that changed my life",
       "station": "MONEY94",
       "subcategory": "Personal Finance",
-      "id": "recpq9ihImRzyhMxs"
+      "id": "recsfSCiVfJXTU6eW"
     },
     {
       "status": "success",
       "title": "Substack isn't solving anti-intellectualism ",
       "station": "PULSE95",
       "subcategory": "News & Current Events",
-      "id": "rec7G4goAijTjHlOt"
+      "id": "rec0HxuY3yWufa9P4"
     },
     {
       "status": "success",
       "title": "the gen z resilience drought",
       "station": "PULSE95",
       "subcategory": "News & Current Events",
-      "id": "recpy64A26TaS2uoK"
+      "id": "recP0oahjtBwWJIXJ"
     },
     {
       "status": "success",
       "title": "The Great Entertainment ",
       "station": "PULSE95",
       "subcategory": "Pop Culture & Entertainment",
-      "id": "recsqf63svmiU4MNt"
+      "id": "recGuXD6nzaNxUUQs"
     },
     {
       "status": "success",
       "title": "This week's entertainment and lifestyle digest",
       "station": "PULSE95",
       "subcategory": "Pop Culture & Entertainment",
-      "id": "recxD2C0pc6fOWSEV"
+      "id": "recO91bCbNpKtEGfQ"
     },
     {
       "status": "success",
       "title": "Did KPop Demon Hunters Dethrone Encanto to Become the Biggest Streaming Film of All Time?",
       "station": "PULSE95",
       "subcategory": "Pop Culture & Entertainment",
-      "id": "rec14tJITh1JqXo8u"
+      "id": "recyKsQweCfdUNjHm"
     },
     {
       "status": "success",
       "title": "films for when you feel lost",
       "station": "PULSE95",
       "subcategory": "Film & TV",
-      "id": "rec2hLqUtj0C7BlQp"
+      "id": "reck7U4aUlQEqdKcT"
     },
     {
       "status": "success",
       "title": "Did KPop Demon Hunters Dethrone Encanto to Become the Biggest Streaming Film of All Time?",
       "station": "PULSE95",
       "subcategory": "Film & TV",
-      "id": "recRwVzWnrtdtQRCN"
+      "id": "rec1qFibZAVn8jjgb"
     },
     {
       "status": "success",
       "title": "Songs Carrying Me Through January",
       "station": "PULSE95",
       "subcategory": "Music",
-      "id": "recWg7qfX3C5eC43T"
+      "id": "recnf75WwEQbEOiYn"
     },
     {
       "status": "success",
       "title": "'I'm not really into politics'",
       "station": "PULSE95",
       "subcategory": "Politics & Policy",
-      "id": "recpomhaLrnnBtm4w"
+      "id": "recbb7nRRs8h21zwv"
     },
     {
       "status": "success",
       "title": "The Great Entertainment ",
       "station": "PULSE95",
       "subcategory": "Politics & Policy",
-      "id": "recdjiQH6s0w30N88"
+      "id": "recTlGyBbw4mWehBE"
     },
     {
       "status": "success",
       "title": "Fool's Gold Standard Science?",
       "station": "PULSE95",
       "subcategory": "Politics & Policy",
-      "id": "recpcTg5TzAH84fZP"
+      "id": "recveONmVh5BtwGqb"
     },
     {
       "status": "success",
       "title": "Wolves in Sheep's Clothing: Indiana Defensive Masterclass",
       "station": "PULSE95",
       "subcategory": "Sports",
-      "id": "recqdd3eLWnTVvQN8"
+      "id": "recln2d1TR1mZbDPE"
     },
     {
       "status": "success",
       "title": "Now, Joe Brady must embrace his reality",
       "station": "PULSE95",
       "subcategory": "Sports",
-      "id": "rec6NBpDRmfGrwgHd"
+      "id": "recAjPV9auaENkoAR"
     },
     {
       "status": "success",
       "title": "you could be brilliant...but you're coward.",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recs4ZxW8gN3lLcIF"
+      "id": "rec6f4Xmsnjm9nvhA"
     },
     {
       "status": "success",
       "title": "discomfort is the price you pay for a fulfilling life",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "rece1w1AZ8r5TyfNi"
+      "id": "recF8e0HjNmx2PO1O"
     },
     {
       "status": "success",
       "title": "I want to do everything, so I do nothing",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recGaE2GkBz2pMGFL"
+      "id": "rec310OPEM7EUPkvT"
     },
     {
       "status": "success",
       "title": "You Don't Need To Document Everything",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "rec8xIkmAr1QUrlbH"
+      "id": "rec9fTvLFzKhfkkJk"
     },
     {
       "status": "success",
       "title": "11 books that have changed my fucking life",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "rec7H2Cva5YL6mXqt"
+      "id": "rec6cBsTAFGEsTDi0"
     },
     {
       "status": "success",
       "title": "how to become friends with literally anyone",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recu62FnJr3dhWQWZ"
+      "id": "reclP2Quk3MEsJeNx"
     },
     {
       "status": "success",
       "title": "you don't just need to touch grass, you need friends",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "rec8fuJAYf5lrp7Rt"
+      "id": "recMZcZoVwx9itgi9"
     },
     {
       "status": "success",
       "title": "Stop copy-pasting spreadsheets into ChatGPT.",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recC2R4Q3HfDmyQQT"
+      "id": "recxFLkpMfH1aGrPl"
     },
     {
       "status": "success",
       "title": "Open Source Deep Learning Curriculum",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recdvtomlarazzlr5"
+      "id": "recrtuNTuZDcpf6uw"
     },
     {
       "status": "success",
       "title": "I built a 6-figure business working 20 hours a week. The 80-hour founders hate me",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recwQVJWbo4ZKLsB5"
+      "id": "recrzseFBQyqxWwxq"
     },
     {
       "status": "success",
       "title": "The personal finance book that changed my life",
       "station": "GROWTH96",
       "subcategory": "Self-Help & Productivity",
-      "id": "recI6F3Brnh21s3yZ"
+      "id": "recBomrLyJakmPlVV"
     },
     {
       "status": "success",
       "title": "You Should Spend More on Clothes",
       "station": "GROWTH96",
       "subcategory": "Food, Travel & Lifestyle",
-      "id": "recNf3iivA2GItUng"
+      "id": "recgsi6SvacA0Gw5N"
     },
     {
       "status": "success",
       "title": "This week's entertainment and lifestyle digest",
       "station": "GROWTH96",
       "subcategory": "Food, Travel & Lifestyle",
-      "id": "rectfNvTY3EZPG5fm"
+      "id": "recfykLmXUWuIRJc1"
     },
     {
       "status": "success",
       "title": "you don't just need to touch grass, you need friends",
       "station": "GROWTH96",
       "subcategory": "Health & Wellness",
-      "id": "recMc62EFmKu7SA6E"
+      "id": "recnsn0JTIR6rfRjV"
     },
     {
       "status": "success",
       "title": "How to Improve Your EV Bioprocess? | Q1-2026",
       "station": "GROWTH96",
       "subcategory": "Sciences",
-      "id": "recTMUGbMB6YDJEsW"
+      "id": "recb9GdobY6SLMm5A"
     },
     {
       "status": "success",
       "title": "The Work Beneath the Noise",
       "station": "GROWTH96",
       "subcategory": "Sciences",
-      "id": "rechzABFJ8wdeP9Rm"
+      "id": "recSmRWf1ZrUGa94c"
     },
     {
       "status": "success",
       "title": "Science Changes. That's the Point. ",
       "station": "GROWTH96",
       "subcategory": "Sciences",
-      "id": "rec8OAOWrKpyio42a"
+      "id": "recJ6Pt7ITXTlvRcU"
     },
     {
       "status": "success",
       "title": "Fool's Gold Standard Science?",
       "station": "GROWTH96",
       "subcategory": "Sciences",
-      "id": "recTqTCS1ZHKzzDhO"
+      "id": "recsOZHv7dmKCJzn8"
     },
     {
       "status": "success",
       "title": "you could be brilliant...but you're coward.",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recGpoLQYOQoSCZCG"
+      "id": "recDGJvtsPB2JUrck"
     },
     {
       "status": "success",
       "title": "we've created a society where artists can't make any money",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "rec75pJXmw8tazb1r"
+      "id": "rec3jNmsHSAznEJEN"
     },
     {
       "status": "success",
       "title": "'I'm not really into politics'",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recPmWnInYrmc9CFM"
+      "id": "recGoY439INy2u9Sm"
     },
     {
       "status": "success",
       "title": "The death of the public intellectual",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recfv5XQ7TdVn9DRi"
+      "id": "reclLhNODz7PL3MYm"
     },
     {
       "status": "success",
       "title": "You Are Not a Thought Daughter: On Intellectualism, Consumerism, and the Flattening of Identity",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recFF9dBTu4TlKBQN"
+      "id": "rec9bRY1OHDjTRXMb"
     },
     {
       "status": "success",
       "title": "Not everything is \"performative\"",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recvktcqISMrA69iY"
+      "id": "recmOOAspo1ddUUL4"
     },
     {
       "status": "success",
       "title": "in defense of pretension. ",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recEpBKtgt62L7sYp"
+      "id": "recJOyGyUGkXHZ5sb"
     },
     {
       "status": "success",
       "title": "Substack isn't solving anti-intellectualism ",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recVYO5NRQ5mOdQM1"
+      "id": "recOAgh4YByzKbbKM"
     },
     {
       "status": "success",
       "title": "You Don't Need To Document Everything",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recSBiZIjgwaXFEkO"
+      "id": "recDmL6W8kJ0t3LSh"
     },
     {
       "status": "success",
       "title": "the gen z resilience drought",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "reclLwY8M0NyEefwT"
+      "id": "recjORfuoHADcUNtE"
     },
     {
       "status": "success",
       "title": "You Should Spend More on Clothes",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recyPV49cI86MOhWp"
+      "id": "recPF6U60utZw9xwm"
     },
     {
       "status": "success",
       "title": "Science Changes. That's the Point. ",
       "station": "CREATE97",
       "subcategory": "Essays & Commentary",
-      "id": "recVFU8PmDY04hELO"
+      "id": "recD1KyjnLvumfsZN"
     },
     {
       "status": "success",
       "title": "literary terms you probably need to know, part 1",
       "station": "CREATE97",
       "subcategory": "Writing & Storytelling",
-      "id": "recqU8Y5Z0m2UOg7W"
+      "id": "recJDcq1E8dnW96oR"
     },
     {
       "status": "success",
       "title": "some essays on how to write essays (p. 1)",
       "station": "CREATE97",
       "subcategory": "Writing & Storytelling",
-      "id": "recpTQPTisPKX6nZg"
+      "id": "recRatlvB4GYG3QNj"
     },
     {
       "status": "success",
       "title": "11 books that have changed my fucking life",
       "station": "CREATE97",
       "subcategory": "Writing & Storytelling",
-      "id": "recqQCvdrL6BoEwxZ"
+      "id": "recI1e6qanTyMmP9Q"
     },
     {
       "status": "success",
       "title": "Shoebox's Curated Calls for Art, Grants & Residencies + More... \ud83c\udfa8",
       "station": "CREATE97",
       "subcategory": "Arts & Crafts",
-      "id": "recHU8PsOl0PhDCb6"
+      "id": "recguq9Q8Wew2qtH2"
     },
     {
       "status": "success",
       "title": "Unpopular opinion alert: We have enough books set in LA & NY",
       "station": "CREATE97",
       "subcategory": "Arts & Crafts",
-      "id": "recZ3SmqPOgSffUJ5"
+      "id": "rec4hpiskFDsFeTKa"
     },
     {
       "status": "success",
       "title": "Nihilism vs. Existentialism vs. Absurdism",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recqnUJR75gHQUmmU"
+      "id": "recC4OMhhgJxr4kQm"
     },
     {
       "status": "success",
       "title": "The death of the public intellectual",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recpccIhl5PqbpbAd"
+      "id": "recE4Cot1wcQCV6Dr"
     },
     {
       "status": "success",
       "title": "discomfort is the price you pay for a fulfilling life",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recqpq46OkMHDq79F"
+      "id": "rec76QuF2VXTBIzSJ"
     },
     {
       "status": "success",
       "title": "You Are Not a Thought Daughter: On Intellectualism, Consumerism, and the Flattening of Identity",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recj2SgtREtLM5IWc"
+      "id": "recKL6Sq9D1QUe7mz"
     },
     {
       "status": "success",
       "title": "I want to do everything, so I do nothing",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recUK1URc9OtFYy0B"
+      "id": "recNg4mhxTcngXHDC"
     },
     {
       "status": "success",
       "title": "Not everything is \"performative\"",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recaDNCXNxNgUUMFu"
+      "id": "recLdBzxTYWLxhnum"
     },
     {
       "status": "success",
       "title": "in defense of pretension. ",
       "station": "CREATE97",
       "subcategory": "Philosophy",
-      "id": "recPVBqil67lIEYyI"
+      "id": "recyWX5zQTIMk1I1l"
     },
     {
       "status": "success",
       "title": "Unpopular opinion alert: We have enough books set in LA & NY",
       "station": "CREATE97",
       "subcategory": "Miscellaneous",
-      "id": "recgzK698ROD8Yn7d"
+      "id": "recXrIhvUfzxVj51Y"
     }
   ]
 }
