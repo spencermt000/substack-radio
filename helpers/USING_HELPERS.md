@@ -147,7 +147,7 @@ python write_to_airtable.py --import urls_scraped.json --newsletters
 
 ```bash
 # 1. Create a file with URLs AND station/subcategory
-cat > capital_markets.json << 'EOF'
+cat > money_markets.json << 'EOF'
 {
   "station": "CAPITAL94",
   "subcategory": "Markets & Investing",
@@ -160,17 +160,17 @@ cat > capital_markets.json << 'EOF'
 EOF
 
 # 2. Scrape all the articles
-python scrape_substack_links.py --file capital_markets.json
+python scrape_substack_links.py --file money_markets.json
 
 # 3. Import to Airtable (no prompts - uses station/subcategory from JSON)
-python write_to_airtable.py --import capital_markets_scraped.json
+python write_to_airtable.py --import money_markets_scraped.json
 ```
 
 ### Adding Newsletters
 
 ```bash
 # After scraping articles, extract and import unique newsletters
-python write_to_airtable.py --import capital_markets_scraped.json --newsletters
+python write_to_airtable.py --import money_markets_scraped.json --newsletters
 
 # Uses station from JSON, newsletters don't have subcategories
 ```
@@ -181,10 +181,10 @@ python write_to_airtable.py --import capital_markets_scraped.json --newsletters
 
 | Station | Description | Subcategories |
 |---------|-------------|---------------|
-| CAPITAL94 | Business, Finance & Innovation | Markets & Investing, Startups & Tech, Economics & Business, Personal Finance & Indie |
-| PULSE95 | Media, Culture & Current Events | News & Current Events, Pop Culture & Entertainment, Politics & Society, Sports & Competition |
-| GROWTH96 | Life, Mind & Wellness | Psychology & Self-Help, Food Travel & Lifestyle, Productivity & Learning, Health & Wellness |
-| CREATE97 | Essays, Stories & Ideas | Essays & Commentary, Fiction & Storytelling, Philosophy & Big Ideas, Art & Craft |
+| MONEY94 | Business, Finance & Innovation | Markets & Investing, Startups & Entrepreneurship, Technology & Innovation, Economics & Business, Personal Finance |
+| PULSE95 | Media, Culture & Current Events | News & Current Events, Pop Culture & Entertainment, Film & TV, Music, Politics & Policy, Sports |
+| GROWTH96 | Life, Mind & Wellness | Self-Help & Productivity, Food Travel & Lifestyle, Health & Wellness, Sciences |
+| CREATE97 | Essays, Stories & Ideas | Essays & Commentary, Writing & Storytelling, Arts & Crafts, Philosophy, Miscellaneous |
 
 ---
 
@@ -198,4 +198,4 @@ python write_to_airtable.py --import capital_markets_scraped.json --newsletters
 
 - **Duplicate handling:** The scripts don't check for duplicates. Make sure you're not importing the same URLs twice.
 
-- **Organize by category:** Create separate JSON files for each station/subcategory combo (e.g., `capital_markets.json`, `pulse_news.json`).
+- **Organize by category:** Create separate JSON files for each station/subcategory combo (e.g., `money_markets.json`, `pulse_news.json`).

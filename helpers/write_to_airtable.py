@@ -22,17 +22,18 @@ AIRTABLE_BASE_ID = os.getenv('AIRTABLE_BASE_ID')
 ARTICLES_TABLE = 'Articles'
 NEWSLETTERS_TABLE = 'Newsletters'
 
-# Station configuration matching CLAUDE.md
+# Station configuration
 STATIONS = {
-    'CAPITAL94': {
-        'name': 'CAPITAL94',
+    'MONEY94': {
+        'name': 'MONEY94',
         'display': 'Business, Finance & Innovation',
         'subcategories': [
-            'The Capital Mix',
+            'The Money Mix',
             'Markets & Investing',
-            'Startups & Tech',
+            'Startups & Entrepreneurship',
+            'Technology & Innovation',
             'Economics & Business',
-            'Personal Finance & Indie',
+            'Personal Finance',
         ]
     },
     'PULSE95': {
@@ -42,8 +43,10 @@ STATIONS = {
             'The Pulse Mix',
             'News & Current Events',
             'Pop Culture & Entertainment',
-            'Politics & Society',
-            'Sports & Competition',
+            'Film & TV',
+            'Music',
+            'Politics & Policy',
+            'Sports',
         ]
     },
     'GROWTH96': {
@@ -51,10 +54,10 @@ STATIONS = {
         'display': 'Life, Mind & Wellness',
         'subcategories': [
             'The Growth Mix',
-            'Psychology & Self-Help',
+            'Self-Help & Productivity',
             'Food, Travel & Lifestyle',
-            'Productivity & Learning',
             'Health & Wellness',
+            'Sciences',
         ]
     },
     'CREATE97': {
@@ -63,9 +66,10 @@ STATIONS = {
         'subcategories': [
             'The Creative Mix',
             'Essays & Commentary',
-            'Fiction & Storytelling',
-            'Philosophy & Big Ideas',
-            'Art & Craft',
+            'Writing & Storytelling',
+            'Arts & Crafts',
+            'Philosophy',
+            'Miscellaneous',
         ]
     },
 }
