@@ -713,13 +713,15 @@
       const currentSubcat = config.subcategories.find(s => s.code === currentFreq);
       const subcatName = currentSubcat?.name || 'Unknown';
 
-      // Filter articles by subcategory for non-main frequencies
+      // First filter by station, then by subcategory for non-main frequencies
+      const stationArticles = articles.filter(a => a.station_main === station);
+      const stationNewsletters = newsletters.filter(n => n.station_main === station);
       const filteredArticles = isMainMix
-        ? articles
-        : articles.filter(a => a.subcategory === subcatName);
+        ? stationArticles
+        : stationArticles.filter(a => a.subcategory === subcatName);
 
       const featuredArticle = selectFeatured(filteredArticles, today, currentFreq);
-      const featuredNewsletter = isMainMix ? selectFeatured(newsletters, today, `${currentFreq}-newsletter`) : null;
+      const featuredNewsletter = isMainMix ? selectFeatured(stationNewsletters, today, `${currentFreq}-newsletter`) : null;
       const additionalArticles = selectMultiple(
         filteredArticles.filter(a => a.id !== featuredArticle?.id),
         today,
