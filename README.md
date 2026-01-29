@@ -1,3 +1,8 @@
+
+
+
+
+#
 # Helper Scripts
 
 Scripts for scraping Substack articles and writing them to Airtable.
