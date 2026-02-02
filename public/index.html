@@ -957,18 +957,59 @@
       );
     };
 
-    // Artists Page
+    // Artists Page - extracts unique authors/newsletters from articles
     const ArtistsPage = ({ navigate }) => {
       const [newsletters, setNewsletters] = useState([]);
       const [loading, setLoading] = useState(true);
 
       const today = useMemo(() => getCSTDate(), []);
 
+      // Extract newsletter URL from article URL (e.g., https://foo.substack.com/p/bar -> https://foo.substack.com)
+      const getNewsletterUrl = (articleUrl) => {
+        try {
+          const urlObj = new URL(articleUrl);
+          return `${urlObj.protocol}//${urlObj.host}`;
+        } catch (e) {
+          return articleUrl;
+        }
+      };
+
+      // Extract unique newsletters from articles
+      const extractNewslettersFromArticles = (articles) => {
+        const newsletterMap = new Map();
+
+        articles.forEach(article => {
+          if (!article.author) return;
+
+          const newsletterUrl = getNewsletterUrl(article.url);
+          const key = newsletterUrl; // Use URL as unique key
+
+          if (!newsletterMap.has(key)) {
+            newsletterMap.set(key, {
+              id: key,
+              name: article.author, // Use author name as newsletter name
+              author: article.author,
+              url: newsletterUrl,
+              station_main: article.station_main,
+              image_url: article.image_url || '',
+              articleCount: 1
+            });
+          } else {
+            // Increment article count for this newsletter
+            const existing = newsletterMap.get(key);
+            existing.articleCount++;
+          }
+        });
+
+        return Array.from(newsletterMap.values());
+      };
+
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const data = await api.fetchNewsletters();
-            setNewsletters(data);
+            const articles = await api.fetchArticles();
+            const extractedNewsletters = extractNewslettersFromArticles(articles);
+            setNewsletters(extractedNewsletters);
           } catch (err) {
             console.error(err);
           } finally {
@@ -982,7 +1023,7 @@
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-radio-cream mb-4">Featured Artists</h1>
-            <p className="text-gray-400">Discover newsletters and authors across all stations</p>
+            <p className="text-gray-400">Authors and newsletters featured on Substack Radio</p>
           </div>
 
           {loading ? (
@@ -1044,9 +1085,9 @@
                               <p className="text-sm text-gray-500">{newsletter.author}</p>
                             </div>
                           </div>
-                          {newsletter.bio && (
-                            <p className="text-sm text-gray-400 line-clamp-2">{newsletter.bio}</p>
-                          )}
+                          <p className="text-sm text-gray-400">
+                            {newsletter.articleCount} {newsletter.articleCount === 1 ? 'article' : 'articles'} featured
+                          </p>
                         </a>
                       ))}
                     </div>
