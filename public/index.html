@@ -399,6 +399,13 @@
               Artists
             </a>
             <a
+              href="#/substacker-of-the-day"
+              onClick={(e) => { e.preventDefault(); navigate('#/substacker-of-the-day'); }}
+              className="text-sm text-gray-400 hover:text-radio-cream transition"
+            >
+              SOTD
+            </a>
+            <a
               href="#/submit"
               onClick={(e) => { e.preventDefault(); navigate('#/submit'); }}
               className="text-sm bg-radio-accent/20 text-radio-accent px-4 py-2 rounded-full hover:bg-radio-accent/30 transition"
@@ -686,6 +693,88 @@
       );
     };
 
+    // Global Substacker of the Day Card
+    const GlobalSubstackerCard = ({ newsletter, navigate, compact = false }) => {
+      if (!newsletter) return null;
+
+      const stationConfig = STATIONS_CONFIG[newsletter.station_main];
+      const color = stationConfig?.color || '#eab308';
+
+      return (
+        <div
+          className="vintage-border rounded-2xl bg-radio-darker/50 overflow-hidden"
+          style={{ '--glow-color': `${color}30` }}
+        >
+          <div className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-radio-accent on-air-pulse" />
+              <span className="text-xs text-radio-accent font-mono tracking-widest">SUBSTACKER OF THE DAY</span>
+            </div>
+
+            <a
+              href={newsletter.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-5 group"
+            >
+              {newsletter.image_url ? (
+                <img
+                  src={newsletter.image_url}
+                  alt=""
+                  className="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-radio-accent/30"
+                />
+              ) : (
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ring-2 ring-radio-accent/30"
+                  style={{ backgroundColor: color }}
+                >
+                  {(newsletter.name || '?').charAt(0)}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-lg text-radio-cream group-hover:text-white transition truncate">
+                  {newsletter.name}
+                </h3>
+                {newsletter.author && newsletter.author !== newsletter.name && (
+                  <p className="text-sm text-gray-500">by {newsletter.author}</p>
+                )}
+                {newsletter.bio && !compact && (
+                  <p className="text-sm text-gray-400 mt-1 line-clamp-2">{newsletter.bio}</p>
+                )}
+              </div>
+              {stationConfig && (
+                <span
+                  className="text-xs px-3 py-1 rounded-full font-mono flex-shrink-0"
+                  style={{ backgroundColor: `${color}20`, color }}
+                >
+                  {stationConfig.name}
+                </span>
+              )}
+            </a>
+
+            {!compact && (
+              <div className="flex items-center gap-3 mt-4">
+                <a
+                  href={newsletter.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-radio-accent hover:text-radio-cream transition"
+                >
+                  Visit Newsletter →
+                </a>
+                <button
+                  onClick={() => navigate('#/substacker-of-the-day')}
+                  className="text-sm text-gray-500 hover:text-gray-300 transition ml-auto"
+                >
+                  See more →
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
     // Article Card Component
     const ArticleCard = ({ article, color, size = 'normal', onReport }) => (
       <div className={`relative vintage-border rounded-xl overflow-hidden bg-radio-darker/30 hover:bg-radio-darker/50 transition group ${
@@ -799,6 +888,12 @@
         };
       }, [articles, newsletters, today]);
 
+      // Global substacker of the day
+      const globalSubstacker = useMemo(() => {
+        if (newsletters.length === 0) return null;
+        return selectWithCooldown(newsletters, today, 'global-substacker-of-the-day');
+      }, [newsletters, today]);
+
       if (loading) {
         return (
           <div className="min-h-screen flex items-center justify-center">
@@ -840,6 +935,13 @@
               Randomly selected articles, refreshed daily.
             </p>
           </div>
+
+          {/* Substacker of the Day */}
+          {globalSubstacker && (
+            <div className="mb-10">
+              <GlobalSubstackerCard newsletter={globalSubstacker} navigate={navigate} compact={false} />
+            </div>
+          )}
 
           {/* Station Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1217,6 +1319,303 @@
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Substacker of the Day Page
+    const SubstackerOfTheDayPage = ({ navigate }) => {
+      const [newsletters, setNewsletters] = useState([]);
+      const [articles, setArticles] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      // Local substacker state
+      const [inputUrl, setInputUrl] = useState('');
+      const [scraping, setScraping] = useState(false);
+      const [followers, setFollowers] = useState([]);
+      const [selectedFollower, setSelectedFollower] = useState(null);
+      const [scrapeHandle, setScrapeHandle] = useState('');
+      const [scrapeError, setScrapeError] = useState(null);
+
+      const today = useMemo(() => getCSTDate(), []);
+
+      // Extract newsletter URL from article URL
+      const getNewsletterUrl = (articleUrl) => {
+        try {
+          const urlObj = new URL(articleUrl);
+          return `${urlObj.protocol}//${urlObj.host}`;
+        } catch (e) {
+          return articleUrl;
+        }
+      };
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const [newslettersData, articlesData] = await Promise.all([
+              api.fetchNewsletters(),
+              api.fetchArticles()
+            ]);
+
+            // Combine real newsletters with extracted ones from articles
+            const extractedMap = new Map();
+            articlesData.forEach(article => {
+              if (!article.author) return;
+              const url = getNewsletterUrl(article.url);
+              if (!extractedMap.has(url)) {
+                extractedMap.set(url, {
+                  id: url,
+                  name: article.author,
+                  author: article.author,
+                  url: url,
+                  station_main: article.station_main,
+                  image_url: article.image_url || '',
+                  bio: '',
+                });
+              }
+            });
+
+            // Merge: prefer real newsletters, fill in with extracted
+            const realUrls = new Set(newslettersData.map(n => n.url));
+            const combined = [
+              ...newslettersData,
+              ...Array.from(extractedMap.values()).filter(n => !realUrls.has(n.url))
+            ];
+
+            setNewsletters(combined);
+            setArticles(articlesData);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, []);
+
+      // Global substacker: deterministic daily pick
+      const globalSubstacker = useMemo(() => {
+        if (newsletters.length === 0) return null;
+        return selectWithCooldown(newsletters, today, 'global-substacker-of-the-day');
+      }, [newsletters, today]);
+
+      // Local substacker: scrape and pick
+      const handleScrape = async () => {
+        if (!inputUrl.trim()) return;
+        setScraping(true);
+        setScrapeError(null);
+        setFollowers([]);
+        setSelectedFollower(null);
+
+        try {
+          const resp = await fetch('/api/scrape-followers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: inputUrl.trim() }),
+          });
+
+          const data = await resp.json();
+
+          if (!resp.ok) {
+            setScrapeError(data.error || 'Failed to fetch followers');
+            return;
+          }
+
+          if (!data.followers || data.followers.length === 0) {
+            setScrapeError('No followers found for this publication. Try a different Substack.');
+            return;
+          }
+
+          setScrapeHandle(data.handle || '');
+          setFollowers(data.followers);
+          // Pick a random one
+          const idx = Math.floor(Math.random() * data.followers.length);
+          setSelectedFollower(data.followers[idx]);
+        } catch (err) {
+          setScrapeError('Network error. Please try again.');
+        } finally {
+          setScraping(false);
+        }
+      };
+
+      const handleShuffle = () => {
+        if (followers.length === 0) return;
+        const idx = Math.floor(Math.random() * followers.length);
+        setSelectedFollower(followers[idx]);
+      };
+
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Back */}
+          <button
+            onClick={() => navigate('#/')}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
+          >
+            <span>←</span>
+            <span>All Stations</span>
+          </button>
+
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <div className="w-3 h-3 rounded-full bg-radio-accent on-air-pulse" />
+              <span className="text-sm text-radio-accent font-mono tracking-widest">DAILY FEATURE</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-radio-cream mb-4">
+              Substacker of the Day
+            </h1>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              Discover new voices in the Substack community — globally or from your own network.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 border-4 border-radio-accent/30 border-t-radio-accent rounded-full animate-spin mx-auto" />
+            </div>
+          ) : (
+            <div className="space-y-12">
+              {/* Global Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs text-gray-500 font-mono tracking-widest">GLOBAL PICK</span>
+                  <span className="text-xs text-gray-600">— Same for everyone today</span>
+                </div>
+                {globalSubstacker ? (
+                  <GlobalSubstackerCard newsletter={globalSubstacker} navigate={navigate} />
+                ) : (
+                  <div className="vintage-border rounded-xl p-8 text-center text-gray-500">
+                    No newsletters available yet.
+                  </div>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-4">
+                <div className="flex-1 border-t border-gray-800" />
+                <span className="text-gray-600 font-mono text-sm">YOUR NETWORK</span>
+                <div className="flex-1 border-t border-gray-800" />
+              </div>
+
+              {/* Local Section */}
+              <div>
+                <div className="mb-4">
+                  <span className="text-xs text-gray-500 font-mono tracking-widest">LOCAL PICK</span>
+                  <p className="text-gray-400 text-sm mt-1">
+                    Enter your Substack to discover a random follower from your community.
+                  </p>
+                </div>
+
+                <div className="flex gap-3 mb-6">
+                  <input
+                    type="text"
+                    value={inputUrl}
+                    onChange={(e) => setInputUrl(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
+                    placeholder="https://yourname.substack.com or substack.com/@handle"
+                    className="flex-1 px-4 py-3 bg-radio-darker border border-gray-700 rounded-xl focus:border-radio-accent focus:outline-none text-white placeholder-gray-600"
+                  />
+                  <button
+                    onClick={handleScrape}
+                    disabled={scraping || !inputUrl.trim()}
+                    className="px-6 py-3 bg-radio-accent/20 text-radio-accent font-semibold rounded-xl hover:bg-radio-accent/30 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  >
+                    {scraping ? 'Scanning...' : 'Find Substacker'}
+                  </button>
+                </div>
+
+                {/* Loading State */}
+                {scraping && (
+                  <div className="text-center py-8">
+                    <div className="w-10 h-10 border-4 border-radio-accent/30 border-t-radio-accent rounded-full animate-spin mx-auto mb-3" />
+                    <p className="text-gray-400 text-sm">Scraping followers from Substack...</p>
+                  </div>
+                )}
+
+                {/* Error State */}
+                {scrapeError && (
+                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl">
+                    {scrapeError}
+                  </div>
+                )}
+
+                {/* Result */}
+                {selectedFollower && !scraping && (
+                  <div className="space-y-4">
+                    <div className="vintage-border rounded-2xl p-6 bg-radio-darker/50">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-2 h-2 rounded-full bg-green-400 on-air-pulse" />
+                        <span className="text-xs text-green-400 font-mono tracking-widest">YOUR LOCAL SUBSTACKER</span>
+                        {scrapeHandle && (
+                          <span className="text-xs text-gray-600 ml-auto">from @{scrapeHandle}'s followers</span>
+                        )}
+                      </div>
+
+                      <a
+                        href={selectedFollower.publication_url || selectedFollower.profile_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-5 group"
+                      >
+                        {selectedFollower.photo_url ? (
+                          <img
+                            src={selectedFollower.photo_url}
+                            alt=""
+                            className="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-green-400/30"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center text-2xl font-bold text-green-400 flex-shrink-0 ring-2 ring-green-400/30">
+                            {(selectedFollower.name || '?').charAt(0)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-lg text-radio-cream group-hover:text-white transition">
+                            {selectedFollower.name}
+                          </h3>
+                          {selectedFollower.handle && (
+                            <p className="text-sm text-gray-500">@{selectedFollower.handle}</p>
+                          )}
+                          {selectedFollower.publication_name && (
+                            <p className="text-sm text-gray-400 mt-0.5">{selectedFollower.publication_name}</p>
+                          )}
+                          {selectedFollower.bio && (
+                            <p className="text-sm text-gray-400 mt-1 line-clamp-2">{selectedFollower.bio}</p>
+                          )}
+                        </div>
+                      </a>
+
+                      <div className="flex items-center gap-3 mt-4">
+                        <a
+                          href={selectedFollower.publication_url || selectedFollower.profile_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-green-400 hover:text-green-300 transition"
+                        >
+                          Visit Profile →
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Shuffle button */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-600">
+                        {followers.length} followers found
+                      </span>
+                      <button
+                        onClick={handleShuffle}
+                        className="flex items-center gap-2 px-4 py-2 bg-radio-darker border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-gray-500 transition"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Shuffle
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -1643,6 +2042,8 @@
         params.stationCode = route.replace('#/station/', '');
       } else if (route === '#/artists') {
         page = 'artists';
+      } else if (route === '#/substacker-of-the-day') {
+        page = 'substacker';
       } else if (route === '#/submit') {
         page = 'submit';
       }
@@ -1657,6 +2058,7 @@
             {page === 'home' && <HomePage navigate={navigate} onReport={handleReport} />}
             {page === 'station' && <StationPage stationCode={params.stationCode} navigate={navigate} onReport={handleReport} />}
             {page === 'artists' && <ArtistsPage navigate={navigate} />}
+            {page === 'substacker' && <SubstackerOfTheDayPage navigate={navigate} />}
             {page === 'submit' && <SubmitPage navigate={navigate} />}
           </main>
 
